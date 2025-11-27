@@ -1,6 +1,5 @@
-package com.example.notesAPI.Service;
+package com.example.notesAPI.service;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 @Service
