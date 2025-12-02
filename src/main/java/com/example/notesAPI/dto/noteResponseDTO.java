@@ -2,34 +2,37 @@ package com.example.notesAPI.dto;
 
 import com.example.notesAPI.model.Note;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data // includes getters, setters, toString(), hashCode(), equals()
 @AllArgsConstructor
-public class noteDTO {
+public class noteResponseDTO {
     /////////////////
     /// VARIABLES ///
     /////////////////
+    private int id;
     private String title;
     private String content;
     private String label;
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     ///////////////////
     /// CONSTRUCTOR ///
     ///////////////////
-    public noteDTO(){}
+    public noteResponseDTO(){}
 
     ///////////////
     /// METHODS ///
     ///////////////
 
-    public noteDTO toDTO (Note note){
-        noteDTO dto = new noteDTO(
+    public static noteResponseDTO toDTO (Note note){
+        noteResponseDTO dto = new noteResponseDTO(
+                note.getId(),
                 note.getTitle(),
                 note.getContent(),
                 note.getLabel(),
