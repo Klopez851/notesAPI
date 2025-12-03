@@ -46,25 +46,41 @@ public class notesService {
     public apiResponseDTO<updateNoteDTO> updateNote(int id,Optional<String> content, Optional<String> title,
                                                     Optional<String> label){
         //get old note values
-        Note note = repo.getById(id);
+        Optional<Note> tempNote = repo.findById(id);
+        if(tempNote.isPresent()) {
+            Note note = tempNote.get();
 
-        //update whatever needs to be updated;
-        if(title.isPresent()){note.setTitle(String.valueOf(title));}
-        if(content.isPresent()){note.setContent(String.valueOf(content));}
-        if(label.isPresent()){note.setLabel(String.valueOf(label));}
+            //update whatever needs to be updated;
+            if (title.isPresent()) {
+                note.setTitle(title.get());
+            }
+            if (content.isPresent()) {
+                note.setContent(content.get());
+            }
+            if (label.isPresent()) {
+                note.setLabel(label.get());
+            }
 
-        //save time of update
-        note.setUpdatedAt(LocalDateTime.now());
+            //save time of update
+            note.setUpdatedAt(LocalDateTime.now());
 
-        //save he updated note
-        repo.save(note);
+            //save he updated note
+            repo.save(note);
 
-        //send api response
-        return new apiResponseDTO<updateNoteDTO>(
-                true,
-                "Note successfully updated",
-                updateNoteDTO.toDTO(note)
-        );
+            //send api response
+            return new apiResponseDTO<updateNoteDTO>(
+                    true,
+                    "Note successfully updated",
+                    updateNoteDTO.toDTO(note)
+            );
+        }
+        else {
+            return new apiResponseDTO(
+                    false,
+                    "Note not found",
+                    null
+            );
+        }
     }
 
     public apiResponseDTO deleteNote(int id){

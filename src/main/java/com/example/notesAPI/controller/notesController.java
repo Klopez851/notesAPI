@@ -6,12 +6,9 @@ import com.example.notesAPI.dto.updateNoteDTO;
 import com.example.notesAPI.service.notesService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/note")
 public class notesController {
     private final notesService service;
@@ -23,11 +20,16 @@ public class notesController {
     @PostMapping
     public apiResponseDTO createNote(@RequestBody createNoteDTO dto){
         //validate response
-        if(dto.getTitle().isBlank() && dto.getContent().isBlank()){
-            return new apiResponseDTO<>(false,"Note must have a title or body.",null);
+        try {
+            if (dto.getTitle().isBlank() && dto.getContent().isBlank()) {
+                return new apiResponseDTO<>(false, "Note must have a title or body.", null);
+            }
+            return service.createNote(Optional.ofNullable(dto.getTitle()), Optional.ofNullable(dto.getContent()),
+                    Optional.ofNullable(dto.getLabel())
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return service.createNote(Optional.ofNullable(dto.getTitle()), Optional.ofNullable(dto.getContent()),
-                Optional.ofNullable(dto.getLabel()));
     }
 
     @GetMapping("/{id}")
