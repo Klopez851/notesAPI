@@ -20,22 +20,30 @@ public class Note {
     ///////////////////////
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id; //making this an int (not a long) since its not a big app, its for personal use
+    private int noteID; //making this an int (not a long) since its not a big app, its for personal use
+
+    private int userID;
+    private int labelID;
+    private String colorID;
 
     private String title;
-    private String content;
-    private String label;
+    private String textContent;
+    private boolean pinned;
+    private boolean hidden;
+    private String cosmetics;
+    private boolean viewOnly;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
+    private boolean deleted;
+    private LocalDateTime timeLeftBeforeDeletion;
 
     ///////////////////
     /// CONSTRUCTOR ///
     ///////////////////
 
     public Note(){}
-    public Note(String title,String content,String label){
+    public Note(String title,String textContent){
         this.title = title;
-        this.content = content;
-        this.label=label;
+        this.textContent = textContent;
     }
 }

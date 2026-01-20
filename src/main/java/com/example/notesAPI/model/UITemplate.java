@@ -7,22 +7,16 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Setter
-public class User {
+public class UITemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userID;
-
     private int templateID;
 
-    private String username;
-    private String passwordHash;
-    private LocalDateTime createdAt;
+    private String name;
+    private String templateDetails;
 
-    public User(){}
-
+    public UITemplate(){}
 }
