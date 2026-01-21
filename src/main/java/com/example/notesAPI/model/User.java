@@ -1,9 +1,6 @@
 package com.example.notesAPI.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +14,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userID;
 
-    private int templateID;
+    @ManyToOne
+    @JoinColumn(name = "TemplateID", nullable = false)//nullable = false since every user must have a template
+    private UITemplate uiTemplate;
 
     private String username;
     private String passwordHash;

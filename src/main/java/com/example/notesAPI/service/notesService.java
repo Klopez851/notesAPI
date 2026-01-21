@@ -19,7 +19,10 @@ public class notesService {
         this.repo = repo;
     }
 
-    public apiResponseDTO<createNoteDTO> createNote(Optional<String> title, Optional<String> content,Optional<String> label){
+    public apiResponseDTO<createNoteDTO> createNote(
+            Optional<String> title,
+            Optional<String> content,
+            Optional<String> label){
         Note note = new Note(title.get(),content.get(),label.get());
         repo.save(note);
         return new apiResponseDTO<createNoteDTO>(true, "Note Created",createNoteDTO.toDTO(note));

@@ -12,7 +12,9 @@ public class NoteColor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int colorID;
 
-    private int userID;
+    @ManyToOne
+    @JoinColumn(name = "userID")
+    private User user;
 
     private String colorHEX;
 
