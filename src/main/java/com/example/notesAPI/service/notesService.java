@@ -7,6 +7,7 @@ import com.example.notesAPI.dto.apiResponseDTO;
 import com.example.notesAPI.dto.createUserDTO;
 import com.example.notesAPI.model.*;
 import com.example.notesAPI.repository.notesRepository;
+import com.example.notesAPI.repository.userRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,14 +16,24 @@ import java.util.Optional;
 @Service
 public class notesService {
 
-    private final notesRepository repo;
+    private final notesRepository notesRepo;
+    private final userRepository userRepo;
 
-    public notesService(notesRepository repo) {
-        this.repo = repo;
+    public notesService(
+            notesRepository notesRepo,
+            userRepository userRepo
+    ) {
+        this.notesRepo = notesRepo;
+        this.userRepo = userRepo;
     }
 
-    public void createUser(createUserDTO user) {
+    public void createUser(createUserDTO userDTO) {
+        User user = new User();
 
+        user.setUsername(userDTO.getUsername());
+        user.setPasswordHash(userDTO.getPasswordHash());
+
+        userRepo.save(user);
     }
 }
 //    public apiResponseDTO<createNoteDTO> createNote(
