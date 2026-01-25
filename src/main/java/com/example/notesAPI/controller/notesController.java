@@ -3,6 +3,7 @@ package com.example.notesAPI.controller;
 import com.example.notesAPI.dto.apiResponseDTO;
 //import com.example.notesAPI.dto.createNoteDTO;
 //import com.example.notesAPI.dto.updateNoteDTO;
+import com.example.notesAPI.dto.createUserDTO;
 import com.example.notesAPI.model.*;
 import com.example.notesAPI.service.notesService;
 import org.springframework.stereotype.Controller;
@@ -21,20 +22,11 @@ public class notesController {
         this.service = service;
     }
 
-    @PostMapping("/createNote")
-    public void createNote(@RequestBody Note note) {
-        service.createUser(note);
-//        //validate response
-//        try {
-//            if (dto.getTitle().isBlank() && dto.getContent().isBlank()) {
-//                return new apiResponseDTO<>(false, "Note must have a title or body.", null);
-//            }
-//            return service.createNote(Optional.ofNullable(dto.getTitle()), Optional.ofNullable(dto.getContent()),
-//                    Optional.ofNullable(dto.getLabel())
-//            );
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
+    //Adds new user to database
+    @PostMapping("/createUser")
+    public void createUser(@RequestBody createUserDTO user) {
+        //VALIDATE INPUT
+        service.createUser(user);
     }
 }
 //

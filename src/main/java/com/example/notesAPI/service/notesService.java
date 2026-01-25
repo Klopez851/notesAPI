@@ -4,6 +4,7 @@ import com.example.notesAPI.dto.apiResponseDTO;
 //import com.example.notesAPI.dto.createNoteDTO;
 //import com.example.notesAPI.dto.noteResponseDTO;
 //import com.example.notesAPI.dto.updateNoteDTO;
+import com.example.notesAPI.dto.createUserDTO;
 import com.example.notesAPI.model.*;
 import com.example.notesAPI.repository.notesRepository;
 import org.springframework.stereotype.Service;
@@ -20,19 +21,8 @@ public class notesService {
         this.repo = repo;
     }
 
-    public void createUser(Note note) {
-        System.out.println(note.getNoteID());
-        System.out.println(note.getUser().getUserID());
-        System.out.println(note.getLabel().getLabelID());
-        System.out.println(note.getColor().getColorID());
-        System.out.println(note.getTitle());
-        System.out.println(note.getTextContent());
-        System.out.println(note.isPinned());
-        System.out.println(note.isHidden());
-        System.out.println(note.getCosmetics());
-        System.out.println(note.isViewOnly());
-        System.out.println(note.isDeleted());
-        System.out.println(note.getTimeLeftBeforeDeletion());
+    public void createUser(createUserDTO user) {
+
     }
 }
 //    public apiResponseDTO<createNoteDTO> createNote(
