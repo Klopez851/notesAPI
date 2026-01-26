@@ -1,33 +1,25 @@
 package com.example.notesAPI.controller;
 
-import com.example.notesAPI.dto.apiResponseDTO;
 //import com.example.notesAPI.dto.createNoteDTO;
 //import com.example.notesAPI.dto.updateNoteDTO;
-import com.example.notesAPI.dto.createUserDTO;
-import com.example.notesAPI.model.*;
-import com.example.notesAPI.service.notesService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import tools.jackson.databind.ObjectMapper;
-
-import java.util.HashMap;
-import java.util.Optional;
+import com.example.notesAPI.dto.apiResponseDTO;
+import com.example.notesAPI.service.noteService;
+        import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/note")
-public class notesController {
-    private final notesService service;
+public class noteController {
+    private final noteService service;
 
-    public notesController(notesService service) {
+    public noteController(noteService service) {
         this.service = service;
     }
 
-    //Adds new user to database
-    @PostMapping("/createUser")
-    public void createUser(@RequestBody createUserDTO user) {
-        //VALIDATE INPUT
-        service.createUser(user);
-    }
+//    @PostMapping("/create")
+//    public apiResponseDTO createNote(@RequestBody createNoteDTO note ){
+//
+//    }
+
 }
 //
 //    @GetMapping("/{id}")

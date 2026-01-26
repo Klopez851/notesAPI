@@ -1,12 +1,10 @@
 package com.example.notesAPI.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -21,10 +19,10 @@ public class Note {
 
     @ManyToOne
     @JoinColumn(name = "userID")
-    private User user;
+    private userTable user;
 
     @ManyToOne
-    @JoinColumn(name = "LabelName")
+    @JoinColumn(name = "labelName")
     private Label label;
 
     @ManyToOne

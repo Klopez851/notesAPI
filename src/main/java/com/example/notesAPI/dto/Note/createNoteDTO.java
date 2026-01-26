@@ -1,10 +1,12 @@
-//package com.example.notesAPI.dto;
+//package com.example.notesAPI.dto.Note;
 //
 //import com.example.notesAPI.model.Note;
 //import lombok.AllArgsConstructor;
-//import lombok.Data;
+//import lombok.Getter;
+//import lombok.Setter;
 //
-//@Data
+//@Getter
+//@Setter
 //@AllArgsConstructor
 //public class createNoteDTO {
 //    /////////////////

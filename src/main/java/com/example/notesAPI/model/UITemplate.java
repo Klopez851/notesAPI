@@ -14,7 +14,7 @@ public class UITemplate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int templateID;
 
-    private String name;
+    private String templateName;
     private String templateDetails;
 
     public UITemplate(){}

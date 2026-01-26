@@ -9,19 +9,23 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class User {
+public class userTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userID;
 
     @ManyToOne
-    @JoinColumn(name = "TemplateID", nullable = false)//nullable = false since every user must have a template
+    @JoinColumn(name = "template_id", nullable = false)//nullable = false since every user must have a template
     private UITemplate uiTemplate;
 
     private String username;
+    private String email;
     private String passwordHash;
     private LocalDateTime createdAt;
 
-    public User(){}
+    public userTable(){}
 
+    public String toString(){
+        return (userID +" "+ username+" "+email+" "+passwordHash+" "+createdAt+".");
+    }
 }

@@ -1,9 +1,11 @@
 package com.example.notesAPI.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 //T = type, a generic placeholder
 public class apiResponseDTO<T> {

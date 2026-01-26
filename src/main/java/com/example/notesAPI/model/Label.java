@@ -14,7 +14,7 @@ public class Label {
 
     @ManyToOne
     @JoinColumn(name = "userID")
-    private User user;
+    private userTable user;
 
     private String labelName;
 
