@@ -19,7 +19,7 @@ public class Note {
 
     @ManyToOne
     @JoinColumn(name = "userID")
-    private userTable user;
+    private UserTable user;
 
     @ManyToOne
     @JoinColumn(name = "labelName")

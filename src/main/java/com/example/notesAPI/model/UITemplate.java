@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -14,8 +12,19 @@ public class UITemplate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int templateID;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    private UserTable user;
+
     private String templateName;
     private String templateDetails;
 
     public UITemplate(){}
+
+    public String toString(){
+        if(user !=null){
+            return (user.getUserID() +" "+templateName+" "+templateDetails);
+        }
+        return (null+" "+templateName+" "+templateDetails);
+    }
 }

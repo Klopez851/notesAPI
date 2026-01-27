@@ -5,25 +5,25 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class userTable {
+public class UserTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userID;
 
-    @ManyToOne
-    @JoinColumn(name = "template_id", nullable = false)//nullable = false since every user must have a template
-    private UITemplate uiTemplate;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UITemplate> uiTemplate;
 
     private String username;
     private String email;
     private String passwordHash;
     private LocalDateTime createdAt;
 
-    public userTable(){}
+    public UserTable(){}
 
     public String toString(){
         return (userID +" "+ username+" "+email+" "+passwordHash+" "+createdAt+".");

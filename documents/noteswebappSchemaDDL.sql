@@ -5,8 +5,7 @@ CREATE TABLE user_table (
   username VARCHAR(50) NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   email varchar(254) NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  template_id INTEGER NOT NULL DEFAULT 1
+  created_at TIMESTAMP NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ;
 
@@ -43,13 +42,12 @@ CREATE TABLE notecolor (
 ;
 
 CREATE TABLE uitemplate (
+  user_id INTEGER DEFAULT NULL,
   template_id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  template_name VARCHAR(25) NOT NULL UNIQUE,
+  template_name VARCHAR(25) NOT NULL,
   template_details TEXT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ;
-
-ALTER TABLE user_table ADD CONSTRAINT fk_user_table_templateID FOREIGN KEY (template_id) REFERENCES uitemplate(template_id) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 ALTER TABLE note ADD CONSTRAINT fk_note_userID FOREIGN KEY (user_id) REFERENCES user_table(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE note ADD CONSTRAINT fk_note_labelID FOREIGN KEY (label_id) REFERENCES label(label_id) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -59,10 +57,10 @@ ALTER TABLE label ADD CONSTRAINT fk_label_userID FOREIGN KEY (user_id) REFERENCE
 
 ALTER TABLE notecolor ADD CONSTRAINT fk_notecolor_userID FOREIGN KEY (user_id) REFERENCES user_table(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
-CREATE INDEX idx_user_table_ ON user_table (user_id);
-CREATE INDEX idx_user_table_template_id ON user_table (template_id);
-CREATE INDEX idx_user_table_email ON user_table (email);
+ALTER TABLE uitemplate ADD CONSTRAINT fk_uitemplate_user_id FOREIGN KEY (user_id) REFERENCES user_table(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
+CREATE INDEX idx_user_table_ ON user_table (user_id);
+CREATE INDEX idx_user_table_email ON user_table (email);
 
 CREATE INDEX idx_note_UserID ON Note (user_id);
 CREATE INDEX idx_note_LabelName ON Note (label_id);
@@ -72,3 +70,7 @@ CREATE INDEX idx_Label_UserID ON label (user_id);
 CREATE INDEX idx_notecolor_UserID ON notecolor (user_id);
 
 CREATE INDEX idx_UITemplate_ ON uitemplate (template_id);
+CREATE INDEX idx_uitemplate_user_id ON uitemplate (user_id);
+
+ALTER TABLE uitemplate ADD CONSTRAINT unique_user_template UNIQUE (user_id, template_name);
+

@@ -14,7 +14,7 @@ public class NoteColor {
 
     @ManyToOne
     @JoinColumn(name = "userID")
-    private userTable user;
+    private UserTable user;
 
     private String colorHEX;
 

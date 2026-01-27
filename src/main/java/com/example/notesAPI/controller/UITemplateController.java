@@ -1,5 +1,6 @@
 package com.example.notesAPI.controller;
 
+import com.example.notesAPI.dto.CreateTemplateDTO;
 import com.example.notesAPI.dto.apiResponseDTO;
 import com.example.notesAPI.model.UITemplate;
 import com.example.notesAPI.service.UITemplateService;
@@ -19,7 +20,7 @@ public class UITemplateController {
     }
 
     @PostMapping("/create")
-    public apiResponseDTO createTemplate(@RequestBody UITemplate template){
+    public apiResponseDTO createTemplate(@RequestBody CreateTemplateDTO template){
         return(service.createTemplate(template));
     }
 }
