@@ -24,7 +24,7 @@ public class userService {
         UserTable user = new UserTable();
 
         user.setUsername(userDTO.getUsername());
-        user.setPasswordHash(userDTO.getPasswordHash());
+        user.setUserPassword(userDTO.getPasswordHash());
         user.setEmail(userDTO.getEmail());
         user.setCreatedAt(LocalDateTime.now());
 

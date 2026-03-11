@@ -18,9 +18,13 @@ public class UITemplateController {
     public UITemplateController(UITemplateService service){
         this.service = service;
     }
-
     @PostMapping("/create")
-    public apiResponseDTO createTemplate(@RequestBody CreateTemplateDTO template){
-        return(service.createTemplate(template));
+    public void createTemplate(@RequestBody CreateTemplateDTO template){
+        System.out.println(template.getTemplateDetails());;
     }
+
+//    @PostMapping("/create")
+//    public apiResponseDTO createTemplate(@RequestBody CreateTemplateDTO template){
+//        return(service.createTemplate(template));
+//    }
 }

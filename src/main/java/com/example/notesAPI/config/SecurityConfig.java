@@ -40,6 +40,6 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return new InMemoryUserDetailsManager(); //this is an inbuilt implementation of the UserDetailsService interface, which allows us to move foward with coding w/o having to make a specific implementation just yet
+        return new MyUserDetailsService();
     }
 }

@@ -10,6 +10,7 @@ import lombok.Setter;
 public class UITemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "template_id")
     private int templateID;
 
     @ManyToOne

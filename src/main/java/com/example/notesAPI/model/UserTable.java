@@ -13,19 +13,25 @@ import java.util.List;
 public class UserTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private int userID;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UITemplate> uiTemplate;
+              //refers to the field name in the child entity (Java class)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<NoteColor> noteColor;
 
     private String username;
     private String email;
-    private String passwordHash;
+
+    @Column(name = "user_password")
+    private String userPassword;
     private LocalDateTime createdAt;
 
     public UserTable(){}
 
     public String toString(){
-        return (userID +" "+ username+" "+email+" "+passwordHash+" "+createdAt+".");
+        return (userID +" "+ username+" "+email+" "+ userPassword +" "+createdAt+".");
     }
 }

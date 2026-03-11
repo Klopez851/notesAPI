@@ -15,18 +15,19 @@ public class Note {
     ///////////////////////
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "note_id")
     private int noteID; //making this an int (not a long) since its not a big app, its for personal use
 
     @ManyToOne
-    @JoinColumn(name = "userID")
+    @JoinColumn(name = "user_id")
     private UserTable user;
 
     @ManyToOne
-    @JoinColumn(name = "labelName")
+    @JoinColumn(name = "label_id")//name of fk in note that refers to the label table
     private Label label;
 
     @ManyToOne
-    @JoinColumn(name = "colorID")
+    @JoinColumn(name = "color_id")
     private NoteColor color;
 
     private String title;

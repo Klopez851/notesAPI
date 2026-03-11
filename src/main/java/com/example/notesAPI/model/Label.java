@@ -10,10 +10,11 @@ import lombok.Setter;
 public class Label {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "label_id")
     private int labelID;
 
     @ManyToOne
-    @JoinColumn(name = "userID")
+    @JoinColumn(name = "user_id")
     private UserTable user;
 
     private String labelName;
