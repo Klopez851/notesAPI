@@ -4,13 +4,17 @@ package com.example.notesAPI.controller;
 //import com.example.notesAPI.dto.updateNoteDTO;
 import com.example.notesAPI.dto.apiResponseDTO;
 import com.example.notesAPI.service.noteService;
-        import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/note")
+//@RequestMapping("/note")
+@RequestMapping("/")
 public class noteController {
     private final noteService service;
 
+    @Autowired
     public noteController(noteService service) {
         this.service = service;
     }
@@ -20,12 +24,12 @@ public class noteController {
 //
 //    }
 
-}
+
 //
-//    @GetMapping("/{id}")
-//    public apiResponseDTO getNote(@PathVariable int id){
-//        return service.getNote(id);
-//    }
+    @GetMapping()
+    public String getNote(){
+        return "hello";
+    }
 //
 //    @PutMapping("/{id}")
 //    public apiResponseDTO updateNote(@PathVariable int id, @RequestBody updateNoteDTO dto){
@@ -38,5 +42,5 @@ public class noteController {
 //        return service.deleteNote(id);
 //    }
 //
-//}
+}
 //
