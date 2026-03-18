@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity //tells spring to use these configs rather than default
 public class SecurityConfig  {
 
-    @Autowired
+    @Autowired //injects matching beans, allowing for one instance to be used accross the whole app by default (ofc this can be chnaged)
     private MyUserDetailsService userDetailsService;
 
     @Bean //the same instance of an object will be used throughout the whole application
