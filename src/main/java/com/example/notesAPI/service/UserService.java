@@ -5,26 +5,30 @@ import com.example.notesAPI.dto.User.userInfoDTO;
 import com.example.notesAPI.model.UserTable;
 import com.example.notesAPI.repository.uiTemplateRepository;
 import com.example.notesAPI.repository.userRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
-public class userService {
+@AllArgsConstructor
+public class UserService {
 
-    private final userRepository userRepo;
-    private final uiTemplateRepository uiTemplateRepo;
+    @Autowired
+    private userRepository userRepo;
 
-    public userService(userRepository userRepo, uiTemplateRepository uiTemplateRepo){
-        this.userRepo = userRepo;
-        this.uiTemplateRepo = uiTemplateRepo;
-    }
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
 
     public apiResponseDTO createUser(userInfoDTO userDTO) {
+        //check if user exist
         UserTable user = new UserTable();
 
         user.setUsername(userDTO.getUsername());
-        user.setUserPassword(userDTO.getPasswordHash());
+        user.setUserPassword(passwordEncoder.encode(userDTO.getPasswordHash()));
         user.setEmail(userDTO.getEmail());
         user.setCreatedAt(LocalDateTime.now());
 

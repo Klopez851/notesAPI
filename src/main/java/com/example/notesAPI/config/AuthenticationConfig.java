@@ -11,15 +11,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity //tells spring to use these configs rather than default
-public class SecurityConfig  {
+public class AuthenticationConfig {
 
-    @Autowired //injects matching beans, allowing for one instance to be used accross the whole app by default (ofc this can be chnaged)
+    @Autowired //injects matching beans, allowing for one instance to be used across the whole app by default (ofc this can be chnaged)
     private MyUserDetailsService userDetailsService;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Bean //the same instance of an object will be used throughout the whole application
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{//HttpSecurity implements SecurityFilterChain, therefore returning a SecurityFilterChain object
@@ -32,16 +35,18 @@ public class SecurityConfig  {
     }
 
     @Bean
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
+    }
+
+    @Bean
     public UserDetailsService userDetailsService(){
         return new MyUserDetailsService();
     }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
-        return provider;
-    }
+
 
 
 }

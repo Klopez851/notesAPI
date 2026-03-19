@@ -1,20 +1,19 @@
 package com.example.notesAPI.controller;
 
-import com.example.notesAPI.dto.User.getUserDTO;
 import com.example.notesAPI.dto.apiResponseDTO;
 import com.example.notesAPI.dto.User.userInfoDTO;
-import com.example.notesAPI.service.userService;
+import com.example.notesAPI.service.UserService;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/user")
 public class userController {
 
-    private final userService service;
-
-    public userController(userService userService){
-        this.service = userService;
-    }
+    @Autowired
+    private UserService service;
 
     //Adds new user to database
     @PostMapping("/createUser")

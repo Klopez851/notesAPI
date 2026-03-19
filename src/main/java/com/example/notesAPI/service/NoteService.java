@@ -7,11 +7,11 @@ import com.example.notesAPI.repository.notesRepository;
         import org.springframework.stereotype.Service;
 
 @Service
-public class noteService {
+public class NoteService {
 
     private final notesRepository notesRepo;
 
-    public noteService(notesRepository notesRepo) {
+    public NoteService(notesRepository notesRepo) {
         this.notesRepo = notesRepo;
     }
 

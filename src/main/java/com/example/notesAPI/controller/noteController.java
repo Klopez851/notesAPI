@@ -2,9 +2,7 @@ package com.example.notesAPI.controller;
 
 //import com.example.notesAPI.dto.createNoteDTO;
 //import com.example.notesAPI.dto.updateNoteDTO;
-import com.example.notesAPI.dto.apiResponseDTO;
-import com.example.notesAPI.service.noteService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.notesAPI.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 //@RequestMapping("/note")
 @RequestMapping("/")
 public class noteController {
-    private final noteService service;
+    private final NoteService service;
 
     @Autowired
-    public noteController(noteService service) {
+    public noteController(NoteService service) {
         this.service = service;
     }
 
