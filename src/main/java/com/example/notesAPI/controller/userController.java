@@ -22,4 +22,9 @@ public class userController {
         return(service.createUser(user));
     }
 
+    @PostMapping("/login")
+    public String login(@RequestBody userInfoDTO user){
+        return service.verify(user);
+    }
+
 }
