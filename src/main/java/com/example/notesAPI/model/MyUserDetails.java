@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+//class necessary for UserDetailsService to work
 @AllArgsConstructor
 public class MyUserDetails implements UserDetails {
 

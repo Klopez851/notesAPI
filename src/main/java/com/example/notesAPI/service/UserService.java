@@ -19,14 +19,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserService {
 
-    @Autowired
+    //using constructor injection with lombok annotations
     private userRepository userRepo;
-
-    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
     private AuthenticationManager  authManager;
+    private JWTService jwtService;
 
 
     public apiResponseDTO createUser(userInfoDTO userDTO) {
@@ -34,7 +31,7 @@ public class UserService {
         UserTable user = new UserTable();
 
         user.setUsername(userDTO.getUsername());
-        user.setUserPassword(passwordEncoder.encode(userDTO.getPasswordHash()));
+        user.setUserPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setEmail(userDTO.getEmail());
         user.setCreatedAt(LocalDateTime.now());
 
@@ -45,11 +42,10 @@ public class UserService {
 
     public String verify(userInfoDTO user) {
         Authentication authenticate =
-                authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPasswordHash()));
+                authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
                 //auth manager returns an Authentication object and takes type authentication token
         if(authenticate.isAuthenticated()){
-            return "success";
-            //here is where the jwt token goes to get sent to client
+            return jwtService.generateToken(user.getUsername());
         }
         return "user not found";
     }
