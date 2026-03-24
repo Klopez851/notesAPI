@@ -31,7 +31,7 @@ public class UserService {
         UserTable user = new UserTable();
 
         user.setUsername(userDTO.getUsername());
-        user.setUserPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setUserPassword(passwordEncoder.encode(userDTO.getUserPassword()));
         user.setEmail(userDTO.getEmail());
         user.setCreatedAt(LocalDateTime.now());
 
@@ -42,7 +42,7 @@ public class UserService {
 
     public String verify(userInfoDTO user) {
         Authentication authenticate =
-                authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
+                authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getUserPassword()));
                 //auth manager returns an Authentication object and takes type authentication token
         if(authenticate.isAuthenticated()){
             return jwtService.generateToken(user.getUsername());

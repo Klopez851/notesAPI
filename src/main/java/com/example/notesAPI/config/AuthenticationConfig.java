@@ -1,7 +1,8 @@
 package com.example.notesAPI.config;
 
-import com.example.notesAPI.service.MyUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.notesAPI.filters.JWTFilter;
+import com.example.notesAPI.service.MyUserDetailsService;;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,16 +16,16 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity //tells spring to use these configs rather than default
+@AllArgsConstructor
 public class AuthenticationConfig {
 
-    @Autowired //injects matching bean, allowing for one instance to be used across the whole app by default (ofc this can be changed)
-    private MyUserDetailsService userDetailsService;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final MyUserDetailsService userDetailsService;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final JWTFilter jwtFilter;
 
     @Bean //the same instance of an object will be used throughout the whole application
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{//HttpSecurity implements SecurityFilterChain, therefore returning a SecurityFilterChain object
@@ -36,6 +37,7 @@ public class AuthenticationConfig {
                 .httpBasic(Customizer.withDefaults()) // requires login w/ postman
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
