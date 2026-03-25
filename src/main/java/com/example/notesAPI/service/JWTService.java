@@ -1,5 +1,6 @@
 package com.example.notesAPI.service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -17,6 +18,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Service
 public class JWTService {
@@ -52,16 +54,42 @@ public class JWTService {
 
     }
 
-    private Key getKey(){
+    private SecretKey getKey(){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey); //key is then decoded and used where needed
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String extractUsername(String token) {
-        return "";
+    public String extractUsermame(String token) {
+        // extract the username from jwt token
+        Claims claims = extractAllClaims(token);
+        return claims.getSubject();
+    }
+
+    //returns a hashmap with all the claims
+    private Claims extractAllClaims(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(getKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims;
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        return true;
+        final String userName = extractUsermame(token);
+
+        if(userName.equals(userDetails.getUsername()) && !isTokenExpired(token)){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.getExpiration();
     }
 }

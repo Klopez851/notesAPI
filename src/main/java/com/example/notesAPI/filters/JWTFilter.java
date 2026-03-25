@@ -1,6 +1,5 @@
 package com.example.notesAPI.filters;
 
-import com.example.notesAPI.model.MyUserDetails;
 import com.example.notesAPI.service.JWTService;
 import com.example.notesAPI.service.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
@@ -13,10 +12,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Component
 @AllArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
@@ -28,11 +29,11 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
         String token = null;
-        String username = null;
+        String username= null;
 
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);//jwt string starts at 7th index of header string
-            username = jwtService.extractUsername(token);
+            username = jwtService.extractUsermame(token);
         }
 
                             // returns the auth state of the current request, needed bc some other filter might auth the user (in the future), dont wanna auth twice

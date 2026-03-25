@@ -53,12 +53,4 @@ public class AuthenticationConfig {
         return provider;
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return new MyUserDetailsService();
-    }
-
-
-
-
 }
