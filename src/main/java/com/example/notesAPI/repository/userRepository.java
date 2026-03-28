@@ -2,9 +2,11 @@ package com.example.notesAPI.repository;
 
 import com.example.notesAPI.model.UserTable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.userdetails.User;
 
 public interface userRepository extends JpaRepository<UserTable, Integer> //table, pk type
 {
+     //return type, name (jpa infers the query based on methos name), parameters
      UserTable findByUsername(String username);
+
+     boolean existsByEmail(String username);
 }

@@ -3,8 +3,8 @@ CREATE SCHEMA `noteswebapp` ;
 CREATE TABLE user_table (
   user_id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
   username VARCHAR(50) NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
-  email varchar(254) NOT NULL,
+  email varchar(254) NOT NULL UNIQUE,
+  user_password VARCHAR(60) NOT NULL,
   created_at TIMESTAMP NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ;
@@ -73,4 +73,3 @@ CREATE INDEX idx_UITemplate_ ON uitemplate (template_id);
 CREATE INDEX idx_uitemplate_user_id ON uitemplate (user_id);
 
 ALTER TABLE uitemplate ADD CONSTRAINT unique_user_template UNIQUE (user_id, template_name);
-
