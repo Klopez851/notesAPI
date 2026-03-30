@@ -1,5 +1,6 @@
 package com.example.notesAPI.filters;
 
+import com.example.notesAPI.model.MyUserDetails;
 import com.example.notesAPI.service.JWTService;
 import com.example.notesAPI.service.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
@@ -29,17 +30,17 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
         String token = null;
-        String username= null;
+        String email= null;
 
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);//jwt string starts at 7th index of header string
-            username = jwtService.extractUsermame(token);
+            email = jwtService.extractEmail(token);
         }
 
                             // returns the auth state of the current request, needed bc some other filter might auth the user (in the future), dont wanna auth twice
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+        if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
             //bc authConfig needs an instance of JWTFilter in order to be inititalized, but jwt needs a bean in authConfig to be initialized, it creates a circular redundancy if i try to call the UserDetails bean here
-            UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
+            MyUserDetails userDetails = (MyUserDetails) context.getBean(MyUserDetailsService.class).loadUserByUsername(email);//load by usernae=me is a misnomer, it loads the user by their email
 
             if(jwtService.validateToken(token, userDetails)){
                 UsernamePasswordAuthenticationToken authToken =

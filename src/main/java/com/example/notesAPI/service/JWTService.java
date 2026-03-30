@@ -1,5 +1,6 @@
 package com.example.notesAPI.service;
 
+import com.example.notesAPI.model.MyUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -38,16 +39,16 @@ public class JWTService {
 
     }
 
-    public String generateToken( String username){
+    public String generateToken(String email){
         //String = key, object = value bc it will be extracted from different objects depending on the user
         Map<String,Object> claims = new HashMap<>();//used to add custom claims to the jwt payload
 
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(username)
+                .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + (5*60*1000)))//first into seconds, then into minute
+                .expiration(new Date(System.currentTimeMillis() + (30*60*1000)))//first into seconds, then into milisecs
                 .and()
                 .signWith(getKey())
                 .compact();//generates the token
@@ -59,7 +60,7 @@ public class JWTService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String extractUsermame(String token) {
+    public String extractEmail(String token) {
         // extract the username from jwt token
         Claims claims = extractAllClaims(token);
         return claims.getSubject();
@@ -75,10 +76,10 @@ public class JWTService {
         return claims;
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String userName = extractUsermame(token);
+    public boolean validateToken(String token, MyUserDetails userDetails) {
+        final String email = extractEmail(token);
 
-        if(userName.equals(userDetails.getUsername()) && !isTokenExpired(token)){
+        if(email.equals(userDetails.getEmail()) && !isTokenExpired(token)){
             return true;
         }
         return false;

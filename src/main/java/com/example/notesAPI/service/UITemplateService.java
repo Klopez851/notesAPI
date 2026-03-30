@@ -1,15 +1,11 @@
 package com.example.notesAPI.service;
 
-import com.example.notesAPI.dto.CreateTemplateDTO;
-import com.example.notesAPI.dto.apiResponseDTO;
+import com.example.notesAPI.dto.UITemplate.CreateTemplateDTO;
+import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.model.UITemplate;
-import com.example.notesAPI.model.UserTable;
 import com.example.notesAPI.repository.uiTemplateRepository;
 import com.example.notesAPI.repository.userRepository;
-import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UITemplateService {
@@ -23,7 +19,7 @@ public class UITemplateService {
     }
 
     //userid can be null, if null itlls be saved as a null userid
-    public apiResponseDTO createTemplate(CreateTemplateDTO templateDTO){
+    public ApiResponseDTO createTemplate(CreateTemplateDTO templateDTO){
         UITemplate template = new UITemplate();
         if(templateDTO.getUserID() != null){
             template.setUser(userRepo.getReferenceById(templateDTO.getUserID()));
@@ -33,7 +29,7 @@ public class UITemplateService {
 
         templateRepo.save(template);
 
-        return new apiResponseDTO<>(
+        return new ApiResponseDTO<>(
                 true,
                 "Template created successfully",
                 template.toString()

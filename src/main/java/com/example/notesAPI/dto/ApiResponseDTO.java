@@ -8,11 +8,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 //T = type, a generic placeholder
-public class apiResponseDTO<T> {
+public class ApiResponseDTO<T> {
 
     private boolean response;
     private String message;
     private T data;
 
-    public apiResponseDTO(){}
+    public ApiResponseDTO(){}
 }

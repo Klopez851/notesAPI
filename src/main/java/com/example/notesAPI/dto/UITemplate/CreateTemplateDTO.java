@@ -1,4 +1,4 @@
-package com.example.notesAPI.dto;
+package com.example.notesAPI.dto.UITemplate;
 
 import lombok.Getter;
 import lombok.Setter;

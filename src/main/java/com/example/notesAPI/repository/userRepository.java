@@ -8,5 +8,9 @@ public interface userRepository extends JpaRepository<UserTable, Integer> //tabl
      //return type, name (jpa infers the query based on methos name), parameters
      UserTable findByUsername(String username);
 
+     UserTable findByEmail(String email);
+
      boolean existsByEmail(String username);
+
+
 }

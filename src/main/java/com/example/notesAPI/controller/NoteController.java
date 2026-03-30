@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 //@RequestMapping("/note")
 @RequestMapping("/")
-public class noteController {
+public class NoteController {
     private final NoteService service;
 
     @Autowired
-    public noteController(NoteService service) {
+    public NoteController(NoteService service) {
         this.service = service;
     }
 

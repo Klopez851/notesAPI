@@ -1,8 +1,6 @@
 package com.example.notesAPI.controller;
 
-import com.example.notesAPI.dto.CreateTemplateDTO;
-import com.example.notesAPI.dto.apiResponseDTO;
-import com.example.notesAPI.model.UITemplate;
+import com.example.notesAPI.dto.UITemplate.CreateTemplateDTO;
 import com.example.notesAPI.service.UITemplateService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
