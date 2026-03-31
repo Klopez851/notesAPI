@@ -28,20 +28,21 @@ public class JWTService {
     private String secretKey;
 
     public JWTService(){
+    // The following code generates a secret key should I ever need to swap it
 //        try{
 //            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");//the key needs to be a certain size for this algo
 //            SecretKey sk = keyGenerator.generateKey();
 //            secretKey= Base64.getEncoder().encodeToString(sk.getEncoded()); //key is first generated and encoded in base64
+//            System.out.println(secretKey)
 //        }catch (Exception e){
 //            System.out.println(e);
 //        }
-
     }
 
     public String generateToken(String email){
         //String = key, object = value bc it will be extracted from different objects depending on the user
         Map<String,Object> claims = new HashMap<>();//used to add custom claims to the jwt payload
-        System.out.println(secretKey);
+
         return Jwts.builder()
                 .claims()
                 .add(claims)
@@ -55,7 +56,7 @@ public class JWTService {
     }
 
     private SecretKey getKey(){
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey); //key is then decoded and used where needed
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey); //key is encoded in Base64, then decoded and used where needed
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

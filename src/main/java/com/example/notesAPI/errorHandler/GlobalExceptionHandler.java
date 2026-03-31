@@ -1,38 +1,37 @@
 package com.example.notesAPI.errorHandler;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import java.net.URI;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler extends Exception{
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     //user input is not valid
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleInvalidUserInput(IllegalArgumentException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    public ProblemDetail handleInvalidUserInput(IllegalArgumentException ex, WebRequest request) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problemDetail.setInstance(URI.create(request.getDescription(false)));
+        return problemDetail;
     }
 
     //user already exists
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<String> handleDuplicateUser(UserAlreadyExistsException ex){
-        //throw a Http.CONFLICT status
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    public ProblemDetail handleDuplicateUser(UserAlreadyExistsException ex, WebRequest request){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problemDetail.setInstance(URI.create(request.getDescription(false)));
+        return problemDetail;
     }
 
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<String> handleInvalidUsername(UsernameNotFoundException ex){
-        //Throw Http.CONFLICt status
-        return ResponseEntity.badRequest().body(ex.getMessage());
-    }
-
+    //user not found
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFound (UserNotFoundException ex){
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    public ProblemDetail handleUserNotFound (UserNotFoundException ex, WebRequest request){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setInstance(URI.create(request.getDescription(false)));
+        return problemDetail;
     }
 }

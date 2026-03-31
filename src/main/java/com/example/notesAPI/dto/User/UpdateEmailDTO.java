@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UpdateEmailDTO {
+
     private final String oldEmail;
     private String newEmail;
 

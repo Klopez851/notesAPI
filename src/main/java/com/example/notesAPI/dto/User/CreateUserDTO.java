@@ -1,17 +1,18 @@
 package com.example.notesAPI.dto.User;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NonNull;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserInfoDTO {
+@AllArgsConstructor
+public class CreateUserDTO {
+
     private String username;
     private String email;
     private String userPassword;
-
-    public UserInfoDTO(){}
 
     public boolean isValid(){
         if((username == null || username.isBlank()) ||

@@ -1,7 +1,8 @@
 package com.example.notesAPI.service;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
-import com.example.notesAPI.dto.User.UserInfoDTO;
+import com.example.notesAPI.dto.User.CreateUserDTO;
+import com.example.notesAPI.dto.User.UserLoginDTO;
 import com.example.notesAPI.errorHandler.UserAlreadyExistsException;
 import com.example.notesAPI.errorHandler.UserNotFoundException;
 import com.example.notesAPI.model.UserTable;
@@ -10,7 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class UserService {
     private final int MAX_EMAIL_LENGTH = 254;
 
 
-    public ApiResponseDTO<String> createUser(UserInfoDTO userDTO) {
+    public ApiResponseDTO<String> createUser(CreateUserDTO userDTO) {
         //clean the data
         String username = userDTO.getUsername().trim();
         String email = userDTO.getEmail().trim().toLowerCase(); //to have consistency in email format in db
@@ -64,7 +64,7 @@ public class UserService {
         return new ApiResponseDTO<>(true,"user created successfully", user.toString());
     }
 
-    public String verify(UserInfoDTO user) {
+    public String verify(UserLoginDTO user) {
         Authentication authenticate =
                 authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getUserPassword()));
                 //auth manager returns an Authentication object and takes type authentication token
@@ -72,7 +72,7 @@ public class UserService {
             return jwtService.generateToken(user.getEmail());
         }
         else {
-            throw new UsernameNotFoundException("User not found");
+            throw new UserNotFoundException("User not found");
         }
     }
 

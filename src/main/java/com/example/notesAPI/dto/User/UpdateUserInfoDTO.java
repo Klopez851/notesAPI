@@ -2,14 +2,16 @@ package com.example.notesAPI.dto.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class UpdateUserInfoDTO {
-    private final String oldData;
-    private final String email;
+
+    private String oldData;
+    private String email;
     private String newData;
 
     public boolean isValid(){
