@@ -1,10 +1,8 @@
 package com.example.notesAPI.controller;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
-import com.example.notesAPI.dto.User.UpdateEmailDTO;
-import com.example.notesAPI.dto.User.UpdateUserInfoDTO;
-import com.example.notesAPI.dto.User.CreateUserDTO;
-import com.example.notesAPI.dto.User.UserLoginDTO;
+import com.example.notesAPI.dto.User.*;
+import com.example.notesAPI.errorHandler.UserNotFoundException;
 import com.example.notesAPI.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +18,8 @@ public class UserController {
     /// POST MAPPINGS ///
     /////////////////////
 
-    //Adds new user to database
     @PostMapping("/createUser")
-    public ApiResponseDTO createUser(@RequestBody CreateUserDTO user) {
+    public ApiResponseDTO createUser(@RequestBody UserInfoDTO user) {
         if(!user.isValid()){
             throw new IllegalArgumentException("All fields must be filled out");
         }
@@ -35,6 +32,18 @@ public class UserController {
             throw new IllegalArgumentException("All fields must be filled out");
         }
         return service.verify(user);
+    }
+
+    ////////////////////
+    /// GET MAPPINGS ///
+    ////////////////////
+
+    @GetMapping("getUser")
+    public ApiResponseDTO<UserInfoDTO> getUser(@RequestBody GetUserDTO user){
+        if(!user.isValid()){
+            throw  new UserNotFoundException("User not found with the email:" + user.getEmail());
+        }
+        return service.getUser(user.getEmail());
     }
 
     //////////////////////

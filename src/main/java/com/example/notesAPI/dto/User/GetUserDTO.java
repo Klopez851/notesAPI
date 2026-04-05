@@ -9,6 +9,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetUserDTO {
 
-    private String username;
+    private String email;
+
+    public boolean isValid(){
+        if(email == null || email.isBlank()){
+            return false;
+        }
+        return true;
+    }
 
 }

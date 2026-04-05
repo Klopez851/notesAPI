@@ -46,8 +46,10 @@ public class Note {
     ///////////////////
 
     public Note(){}
-    public Note(String title,String textContent){
+    public Note(UserTable user,String title,String textContent,Label label){
         this.title = title;
         this.textContent = textContent;
+        this.label=label;
+        this.user=user;
     }
 }

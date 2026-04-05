@@ -1,12 +1,12 @@
 package com.example.notesAPI.service;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
-import com.example.notesAPI.dto.User.CreateUserDTO;
+import com.example.notesAPI.dto.User.UserInfoDTO;
 import com.example.notesAPI.dto.User.UserLoginDTO;
 import com.example.notesAPI.errorHandler.UserAlreadyExistsException;
 import com.example.notesAPI.errorHandler.UserNotFoundException;
 import com.example.notesAPI.model.UserTable;
-import com.example.notesAPI.repository.userRepository;
+import com.example.notesAPI.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class UserService {
 
     //using constructor injection with lombok annotations
-    private userRepository userRepo;
+    private UserRepository userRepo;
     private BCryptPasswordEncoder passwordEncoder;
     private AuthenticationManager  authManager;
     private JWTService jwtService;
@@ -29,11 +29,11 @@ public class UserService {
     private final int MAX_EMAIL_LENGTH = 254;
 
 
-    public ApiResponseDTO<String> createUser(CreateUserDTO userDTO) {
+    public ApiResponseDTO<String> createUser(UserInfoDTO userDTO) {
         //clean the data
-        String username = userDTO.getUsername().trim();
-        String email = userDTO.getEmail().trim().toLowerCase(); //to have consistency in email format in db
-        String password = userDTO.getUserPassword().trim();
+        String username = userDTO.getUsername().strip();
+        String email = userDTO.getEmail().strip().toLowerCase(); //to have consistency in email format in db
+        String password = userDTO.getUserPassword().strip();
 
         //validate username length
         if(username.length() > MAX_USERNAME_LENGTH){
@@ -72,14 +72,14 @@ public class UserService {
             return jwtService.generateToken(user.getEmail());
         }
         else {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException("User not found with the email "+ user.getEmail());
         }
     }
 
     public ApiResponseDTO<String> updateUsername(String newUsername, String email) {
        //clean the data
-        String username = newUsername.trim();
-        String userEmail = email.trim();
+        String username = newUsername.strip();
+        String userEmail = email.strip();
 
         //validate the input some more
         if(username.length() > MAX_USERNAME_LENGTH){
@@ -104,8 +104,8 @@ public class UserService {
 
     public ApiResponseDTO<String> updateEmail(String oldEmail, String newEmail) {
         //clean the data
-        String email = newEmail.trim();
-        String tempEmail = oldEmail.trim();
+        String email = newEmail.strip().toLowerCase();
+        String tempEmail = oldEmail.strip().toLowerCase();
 
         //validate the input some more
         if(email.length() > MAX_EMAIL_LENGTH){
@@ -129,15 +129,15 @@ public class UserService {
 
     public ApiResponseDTO<String> updatePassword(String newPassword, String email) {
         //clean the data
-        String pswrd = newPassword.trim();
-        String userEmail = email.trim();
+        String pswrd = newPassword.strip();
+        String userEmail = email.strip();
 
         //find user by email
         UserTable user = userRepo.findByEmail(userEmail);
 
         //hash new password
         if(user ==  null){
-            throw new UserNotFoundException("The email address provided does not match any existing user account. " +
+            throw new UserNotFoundException("The email address " +userEmail+" does not match any existing user account. " +
                     "Password updates require a valid email to identify the user record to update.");
         }else {
             user.setUserPassword(passwordEncoder.encode(pswrd));
@@ -147,5 +147,23 @@ public class UserService {
         userRepo.save(user);
 
         return new ApiResponseDTO<String>(true,"Email updated successfully",user.toString() );
+    }
+
+    public ApiResponseDTO<UserInfoDTO> getUser(String userEmail) {
+        //clean the data
+        String email = userEmail.strip().toLowerCase();
+
+        UserInfoDTO userInfo;
+
+        //get the user from the db
+        UserTable user = userRepo.findByEmail(email);
+        //make sure the user exists
+        if(user == null){
+            throw new UserNotFoundException("User with the email "+email+" not found");
+        }else{
+            userInfo = new UserInfoDTO(user.getUsername(),user.getEmail(),null);
+        }
+        //send back the user dto
+        return new ApiResponseDTO<UserInfoDTO>(true,"User found", userInfo);
     }
 }

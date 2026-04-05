@@ -3,7 +3,7 @@ package com.example.notesAPI.service;
 import com.example.notesAPI.errorHandler.UserNotFoundException;
 import com.example.notesAPI.model.MyUserDetails;
 import com.example.notesAPI.model.UserTable;
-import com.example.notesAPI.repository.userRepository;
+import com.example.notesAPI.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private userRepository userRepo;
+    private UserRepository userRepo;
 
 //    public MyUserDetailsService(userRepository userRepo){
 //        this.userRepo=userRepo;

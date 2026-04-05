@@ -19,7 +19,13 @@ public class Label {
 
     private String labelName;
 
-    public Label() {
+    public Label(UserTable user, String labelName) {
+        this.user = user;
+        this.labelName =labelName;
+    }
+
+    public String toString(){
+        return (labelID+" "+user.getEmail()+" "+labelName);
     }
 
 

@@ -23,6 +23,9 @@ public class UserTable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<NoteColor> noteColor;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Label> label;
+
     private String username;
     private String email;
 
