@@ -2,6 +2,7 @@ package com.example.notesAPI.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Note {
     ///////////////////////
     /// CLASS VARIABLES ///
@@ -45,11 +47,15 @@ public class Note {
     /// CONSTRUCTOR ///
     ///////////////////
 
-    public Note(){}
-    public Note(UserTable user,String title,String textContent,Label label){
+    public Note(UserTable user,String title,String textContent,Label label, NoteColor noteColor){
         this.title = title;
         this.textContent = textContent;
         this.label=label;
         this.user=user;
+        this.color = noteColor;
+    }
+
+    public String toString(){
+        return (noteID+" "+user.getEmail()+" "+title+" "+textContent);
     }
 }

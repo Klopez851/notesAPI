@@ -2,11 +2,13 @@ package com.example.notesAPI.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "notecolor")
 public class NoteColor {
     @Id
@@ -21,6 +23,9 @@ public class NoteColor {
     @Column(name = "color_hex")
     private String colorHEX;
 
-    public NoteColor(){}
+    public NoteColor(String colorHEX, UserTable user){
+        this.user = user;
+        this.colorHEX = colorHEX;
+    }
 
 }

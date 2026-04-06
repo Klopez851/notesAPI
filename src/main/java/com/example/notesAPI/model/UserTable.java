@@ -2,6 +2,7 @@ package com.example.notesAPI.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +35,6 @@ public class UserTable {
     private String userPassword;
     private LocalDateTime createdAt;
 
-    public UserTable(){}
 
     public String toString(){
         return (userID +" "+ username+" "+email+" "+ userPassword +" "+createdAt+".");

@@ -14,8 +14,8 @@ public class CreateNoteDTO {
     private String title;
     private String content;
     private String email;
-    private Label label;
-    private NoteColor noteColor;
+    private String label;
+    private String noteColor;
 
     public boolean isValid(){
         //The condition evaluates to true if email is null or blank, or Both title and content are null or blank.
@@ -42,14 +42,14 @@ public class CreateNoteDTO {
     }
 
     public boolean hasLabel(){
-        if(label == null ){
+        if(label == null || label.isBlank() ){
             return false;
         }
         return true;
     }
 
     public boolean hasColor(){
-        if(noteColor == null){
+        if(noteColor == null || label.isBlank()){
             return false;
         }
         return true;
