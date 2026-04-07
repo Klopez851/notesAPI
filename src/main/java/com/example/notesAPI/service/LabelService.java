@@ -2,6 +2,7 @@ package com.example.notesAPI.service;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.Label.LabelDTO;
+import com.example.notesAPI.errorHandler.IdNotFoundException;
 import com.example.notesAPI.errorHandler.UserNotFoundException;
 import com.example.notesAPI.model.Label;
 import com.example.notesAPI.model.UserTable;
@@ -9,9 +10,10 @@ import com.example.notesAPI.repository.LabelRepository;
 import com.example.notesAPI.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -57,5 +59,32 @@ public class LabelService {
 
         //return them
         return new ApiResponseDTO<List<LabelDTO>>(true, "labels successfully fetched", labels);
+    }
+
+    public ApiResponseDTO<String> updateLabel(HashMap<String, String> reqLabel) {
+        //clean data
+        String reqLabelName = reqLabel.get("labelName").strip();
+        int reqLabelID = Integer.parseInt(reqLabel.get("labelID"));
+
+        //get label from db
+        Optional<Label> label = labelRepo.findById(reqLabelID);
+
+        //make sure label isnt the same
+        if(label.isEmpty()){
+            throw new IdNotFoundException("A label with that ID doesnt exist");
+        }
+
+        //make sure the labels are the same
+        if(Objects.equals(label.get().getLabelName(), reqLabelName)){
+            return new ApiResponseDTO<String>(true,
+                    "The label name in your request matches the existing name in the database.", null);
+        }
+        //update label
+        label.get().setLabelName(reqLabelName);
+
+        //save label
+        labelRepo.save(label.get());
+
+        return new ApiResponseDTO<String>(true, "Label successfully updated", label.get().getLabelName());
     }
 }

@@ -46,10 +46,23 @@ public class LabelController {
         return service.getLabels(userEmail);
     }
 
-    // CRUD
+    //might create endpoint to get individual labels if needed
 
-    // read
-    //get label
+    ///////////////////////
+    /// PATCH MAPPING/S ///
+    ///////////////////////
+
+    @PatchMapping("/updateLabel")
+    public ApiResponseDTO<String> updateLabel(@RequestBody HashMap<String,String> reqLabel){
+        if((reqLabel.get("labelID") == null || reqLabel.get("labelID").isBlank())
+                || reqLabel.get("labelName") == null || reqLabel.get("labelName").isBlank()){
+            throw new IllegalArgumentException("All fields must be filled");
+        }
+
+        return service.updateLabel(reqLabel);
+    }
+
+    // CRUD
 
     // update
     //update label

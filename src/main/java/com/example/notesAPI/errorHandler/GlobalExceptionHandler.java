@@ -22,7 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     //user already exists
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ProblemDetail handleDuplicateUser(UserAlreadyExistsException ex, WebRequest request){
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setInstance(URI.create(request.getDescription(false)));
         return problemDetail;
     }
@@ -30,7 +30,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     //user not found
     @ExceptionHandler(UserNotFoundException.class)
     public ProblemDetail handleUserNotFound (UserNotFoundException ex, WebRequest request){
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setInstance(URI.create(request.getDescription(false)));
+        return problemDetail;
+    }
+
+    //Id not found
+    @ExceptionHandler(IdNotFoundException.class)
+    public ProblemDetail handleIdNotFound(IdNotFoundException ex, WebRequest request){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setInstance(URI.create(request.getDescription(false)));
         return problemDetail;
     }
