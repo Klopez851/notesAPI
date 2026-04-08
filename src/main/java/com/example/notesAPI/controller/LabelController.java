@@ -62,10 +62,17 @@ public class LabelController {
         return service.updateLabel(reqLabel);
     }
 
-    // CRUD
+    ////////////////////////
+    /// DELETE MAPPING/S ///
+    ////////////////////////
+    @DeleteMapping("/deleteLabel")
+    public ApiResponseDTO<String> deleteLabel(@RequestBody HashMap<String, Integer> labelID){
+        if(labelID.get("labelID")==null){
+            throw new IllegalArgumentException("Please provide a valid label id");
+        }
 
-    // update
-    //update label
+        return service.deleteLabel(labelID);
+    }
 
     //delete
     //delete label

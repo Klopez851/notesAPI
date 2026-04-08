@@ -87,4 +87,17 @@ public class LabelService {
 
         return new ApiResponseDTO<String>(true, "Label successfully updated", label.get().getLabelName());
     }
+
+    public ApiResponseDTO<String> deleteLabel(HashMap<String, Integer> labelID) {
+        //ensure label exists
+        boolean labelExists = labelRepo.existsById(labelID.get("labelID"));
+
+        //delete label
+        if(labelExists){
+            labelRepo.deleteById(labelID.get("labelID"));
+            return new ApiResponseDTO<String>(true, "label successfully deleted", null);
+        }
+
+        throw new IdNotFoundException("A label with that id could not be found");
+    }
 }
