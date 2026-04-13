@@ -38,7 +38,7 @@ public class UserController {
     /// GET MAPPINGS ///
     ////////////////////
 
-    @GetMapping("getUser")
+    @GetMapping("/getUser")
     public ApiResponseDTO<UserInfoDTO> getUser(@RequestBody GetUserDTO user){
         if(!user.isValid()){
             throw  new UserNotFoundException("User not found with the email:" + user.getEmail());

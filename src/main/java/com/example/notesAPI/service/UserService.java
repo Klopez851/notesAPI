@@ -164,6 +164,6 @@ public class UserService {
             userInfo = new UserInfoDTO(user.getUsername(),user.getEmail(),null);
         }
         //send back the user dto
-        return new ApiResponseDTO<UserInfoDTO>(true,"User found", userInfo);
+        return new ApiResponseDTO<UserInfoDTO>(true,"User Found", userInfo);
     }
 }
