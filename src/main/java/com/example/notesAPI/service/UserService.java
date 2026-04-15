@@ -174,7 +174,8 @@ public class UserService {
                 throw new DatabaseErrorException(e.getMessage());
             }
 
-            return new ApiResponseDTO<String>(true, "Email updated successfully", user.toString());
+            // new token gets minted after email is updated, since email is part of the claims and main way of IDing users
+            return new ApiResponseDTO<String>(true, "Email updated successfully", jwtService.generateToken(newEmail));
         }
 
         throw new InvalidRequestException("Access denied: You can only modify your own account.");
@@ -213,20 +214,23 @@ public class UserService {
     /// DELETE METHODS ///
     //////////////////////
 
-    public ApiResponseDTO<String> deleteUser(GetUserDTO user) {
+    public ApiResponseDTO<String> deleteUser(GetUserDTO user, HttpServletRequest request) {
         //clean data
         String userEmail = user.getEmail().strip().toLowerCase();
 
-        //find user with that email
-        UserTable userToBeDeleted = userRepo.findByEmail(userEmail);
+        if(isRequestValid(userEmail, request)) {
+            //find user with that email
+            UserTable userToBeDeleted = userRepo.findByEmail(userEmail);
 
-        if(userToBeDeleted == null){
-            throw new UserNotFoundException("A user associated with that email could not be found");
+            if(userToBeDeleted == null){
+                throw new UserNotFoundException("A user associated with that email could not be found");
+            }
+            //delete user
+            userRepo.delete(userToBeDeleted);
+
+            return new ApiResponseDTO<String>(true,"user "+userToBeDeleted.getEmail()+" successfully deleted", null);
         }
-        //delete user
-        userRepo.delete(userToBeDeleted);
-
-        return new ApiResponseDTO<String>(true,"user "+userToBeDeleted.getEmail()+" successfully deleted", null);
+        throw new InvalidRequestException("Access denied: You can only modify your own account.");
     }
 
     ///////////////////////

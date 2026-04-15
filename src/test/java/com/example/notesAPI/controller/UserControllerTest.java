@@ -284,21 +284,21 @@ class UserControllerTest {
 //    }
 
 
-    //test reset
-    @Test
-    void restTestEmail() {
-        Header authHeader = new Header("Authorization", "Bearer "+authToken);
-
-        given()
-                .when()
-                .contentType("application/json")
-                .header(authHeader)
-                .body("""
-                        {
-                            "oldEmail":"sampleemailtest@gmail.com",
-                            "newEmail":"sampleemail@gmail.com"
-                        }
-                        """)
-                .patch("/updateEmail");
-    }
+//    //test reset
+//    @Test
+//    void restTestEmail() {
+//        Header authHeader = new Header("Authorization", "Bearer "+authToken);
+//
+//        given()
+//                .when()
+//                .contentType("application/json")
+//                .header(authHeader)
+//                .body("""
+//                        {
+//                            "oldEmail":"sampleemailtest@gmail.com",
+//                            "newEmail":"sampleemail@gmail.com"
+//                        }
+//                        """)
+//                .patch("/updateEmail");
+//    }
 }

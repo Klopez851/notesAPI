@@ -80,11 +80,11 @@ public class UserController {
     //////////////////////
 
     @DeleteMapping("/deleteUser")
-    public ApiResponseDTO<String> deleteUser(@RequestBody GetUserDTO user){
+    public ApiResponseDTO<String> deleteUser(@RequestBody GetUserDTO user, HttpServletRequest request){
         if(!user.isValid()){
             throw new UserNotFoundException("please provide a valid email");
         }
-        return service.deleteUser(user);
+        return service.deleteUser(user, request);
         //ensure user and jwt token info matches
     }
 
