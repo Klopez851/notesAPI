@@ -42,4 +42,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setInstance(URI.create(request.getDescription(false)));
         return problemDetail;
     }
+
+    //user making request and user record being afffected dont match
+    @ExceptionHandler(InvalidRequestException.class)
+    public ProblemDetail handleInvalidRequest(InvalidRequestException ex, WebRequest request){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+        problemDetail.setInstance(URI.create(request.getDescription(false)));
+        return problemDetail;
+    }
+
+    //user input is not valid
+    @ExceptionHandler(DatabaseErrorException.class)
+    public ProblemDetail handleInvalidUserInput(DatabaseErrorException ex, WebRequest request) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problemDetail.setInstance(URI.create(request.getDescription(false)));
+        return problemDetail;
+    }
 }

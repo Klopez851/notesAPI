@@ -1,13 +1,10 @@
 package com.example.notesAPI.controller;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import io.restassured.http.Header;
-import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
 
 class UserControllerTest {
@@ -90,6 +87,23 @@ class UserControllerTest {
     }
 
     @Test
+    void createUser_IncorrectReqBody_BadReqResponse(){
+        given()
+                .when()
+                .contentType("application/json")
+                .body("""
+                        {
+                            "email":"sampleemail@gmail.com",
+                            "userPassword":"qwertyisfun"
+                        }
+                        """)
+                .post("/createUser")
+                .then()
+                .assertThat()
+                .statusCode(400);//bad request
+    }
+
+    @Test
     void createUser_UsernameTooLong_BadReqResponse(){
         given()
                 .when()
@@ -127,16 +141,63 @@ class UserControllerTest {
                 .statusCode(400);//bad request
     }
 
-
-
-
+    ////////////////////////
+    /// USER LOGIN TESTS ///
+    ////////////////////////
 
     @Test
-    void getUser_ProperBody_ReturnsSuccessMsg(){
+    void login_ExistingUser_JWTReturned(){
+        given()
+                .when()
+                .contentType("application/json")
+                .body("""
+                        {
+                            "email":"sampleemail@gmail.com",
+                            "userPassword":"qwertyisfun"
+                        }""")
+                .post("/login")
+                .then() //what needs to be asserted/validated/tested for correctness
+                .assertThat()
+                .statusCode(200) //ok
+                .body(not(emptyOrNullString()));
+    }
+
+    @Test
+    void login_NonExistingUser_NotFoundResponse(){
+        given()
+                .when()
+                .contentType("application/json")
+                .body("""
+                        {
+                            "email":"sampleemail3@gmail.com",
+                            "userPassword":"qwertyisfun3"
+                        }""")
+                .post("/login")
+                .then()
+                .assertThat().statusCode(404);//not found
+    }
+
+    @Test
+    void login_EmptyReqBody_BadReqResponse(){
+        given()
+                .when()
+                .contentType("application/json")
+                .body("")
+                .post("/login")
+                .then()
+                .assertThat().statusCode(400);
+    }
+
+    //////////////////////
+    /// GET USER TESTS ///
+    //////////////////////
+
+    @Test
+    void getUser_ExistingUser_SuccessResponse(){
         Header authHeader = new Header("Authorization", "Bearer "+authToken);
 
         given()
-        .when()
+            .when()
             .contentType("application/json")
             .header(authHeader)
                 .body("""
@@ -145,7 +206,7 @@ class UserControllerTest {
                         }
                         """)
                 .get("/getUser")
-        .then()
+            .then()
                 .assertThat()
                 .statusCode(200)
                 .body("response", equalTo(true),
@@ -156,20 +217,88 @@ class UserControllerTest {
                 );
     }
 
-
     @Test
-    void getUser() {
+    void getUser_NonExistingUser_NotFoundResponse(){
+        Header authHeader = new Header("Authorization", "Bearer "+authToken);
+
+        given()
+                .when()
+                .contentType("application/json")
+                .header(authHeader)
+                .body("""
+                        {
+                            "email":"sampleemail3@gmail.com"
+                        }
+                        """)
+                .get("/getUser")
+                .then()
+                .assertThat()
+                .statusCode(404); //not found
     }
 
     @Test
-    void updateEmail() {
+    void getUser_EmptyReqBody_BadReqResponse(){
+        Header authHeader = new Header("Authorization", "Bearer "+authToken);
+
+        given()
+                .when()
+                .contentType("application/json")
+                .header(authHeader)
+                .body("")
+                .get("/getUser")
+                .then()
+                .assertThat()
+                .statusCode(400);
     }
 
-    @Test
-    void updateUsername() {
-    }
+    //////////////////////////////
+    /// UPDATE USER INFO TESTS ///
+    //////////////////////////////
 
     @Test
-    void updatePassword() {
+    void updateEmail_ExisitingUser_SuccessResponse() {
+        Header authHeader = new Header("Authorization", "Bearer "+authToken);
+
+        given()
+                .when()
+                .contentType("application/json")
+                .header(authHeader)
+                .body("""
+                        {
+                            "oldEmail":"sampleemail@gmail.com",
+                            "newEmail":"sampleemailtest@gmail.com"
+                        }
+                        """)
+                .patch("/updateEmail")
+                .then()
+                .assertThat()
+                .statusCode(200);
+    }
+//
+//    @Test
+//    void updateUsername() {
+//    }
+//
+//    @Test
+//    void updatePassword() {
+//    }
+
+
+    //test reset
+    @Test
+    void restTestEmail() {
+        Header authHeader = new Header("Authorization", "Bearer "+authToken);
+
+        given()
+                .when()
+                .contentType("application/json")
+                .header(authHeader)
+                .body("""
+                        {
+                            "oldEmail":"sampleemailtest@gmail.com",
+                            "newEmail":"sampleemail@gmail.com"
+                        }
+                        """)
+                .patch("/updateEmail");
     }
 }

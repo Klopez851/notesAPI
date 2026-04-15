@@ -1,12 +1,14 @@
 package com.example.notesAPI.service;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
-import com.example.notesAPI.dto.User.UserInfoDTO;
-import com.example.notesAPI.dto.User.UserLoginDTO;
+import com.example.notesAPI.dto.User.*;
+import com.example.notesAPI.errorHandler.DatabaseErrorException;
+import com.example.notesAPI.errorHandler.InvalidRequestException;
 import com.example.notesAPI.errorHandler.UserAlreadyExistsException;
 import com.example.notesAPI.errorHandler.UserNotFoundException;
 import com.example.notesAPI.model.UserTable;
 import com.example.notesAPI.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,14 +22,31 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserService {
 
+    // CONSTANTS //
+    private final int MAX_USERNAME_LENGTH = 50;
+    private final int MAX_EMAIL_LENGTH = 254;
+
     //using constructor injection with lombok annotations
     private UserRepository userRepo;
     private BCryptPasswordEncoder passwordEncoder;
     private AuthenticationManager  authManager;
     private JWTService jwtService;
-    private final int MAX_USERNAME_LENGTH = 50;
-    private final int MAX_EMAIL_LENGTH = 254;
 
+    ////////////////////
+    /// POST METHODS ///
+    ////////////////////
+
+    public String verify(UserLoginDTO user) {
+        Authentication authenticate =
+                authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getUserPassword()));
+        //auth manager returns an Authentication object and takes type authentication token
+        if(authenticate.isAuthenticated()){
+            return jwtService.generateToken(user.getEmail());
+        }
+        else {
+            throw new UserNotFoundException("User not found with the email "+ user.getEmail());
+        }
+    }
 
     public ApiResponseDTO<String> createUser(UserInfoDTO userDTO) {
         //clean the data
@@ -59,95 +78,18 @@ public class UserService {
         }
 
         //if it doesn't add the user to the db
-        userRepo.save(user);
+        try {
+            userRepo.save(user);
+        } catch (Exception e) {
+            throw new DatabaseErrorException(e.getMessage());
+        }
 
         return new ApiResponseDTO<>(true,"user created successfully", user.toString());
     }
 
-    public String verify(UserLoginDTO user) {
-        Authentication authenticate =
-                authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getUserPassword()));
-                //auth manager returns an Authentication object and takes type authentication token
-        if(authenticate.isAuthenticated()){
-            return jwtService.generateToken(user.getEmail());
-        }
-        else {
-            throw new UserNotFoundException("User not found with the email "+ user.getEmail());
-        }
-    }
-
-    public ApiResponseDTO<String> updateUsername(String newUsername, String email) {
-       //clean the data
-        String username = newUsername.strip();
-        String userEmail = email.strip();
-
-        //validate the input some more
-        if(username.length() > MAX_USERNAME_LENGTH){
-            throw new IllegalArgumentException("Username is too long");
-        }
-
-        //get the user from the db
-        UserTable user = userRepo.findByEmail(userEmail);
-
-        //update the user info
-        if(user == null){
-            throw new UserNotFoundException("The email address provided does not match any existing user account. " +
-                    "Username updates require a valid email to identify the user record to update.");
-        }else {
-            user.setUsername(username);
-        }
-        //save the user
-        userRepo.save(user);
-
-        return new ApiResponseDTO<String>(true,"Username updated successfully",user.toString() );
-    }
-
-    public ApiResponseDTO<String> updateEmail(String oldEmail, String newEmail) {
-        //clean the data
-        String email = newEmail.strip().toLowerCase();
-        String tempEmail = oldEmail.strip().toLowerCase();
-
-        //validate the input some more
-        if(email.length() > MAX_EMAIL_LENGTH){
-            throw new IllegalArgumentException("Email is too long");
-        }
-
-        //get the user from the db
-        UserTable user = userRepo.findByEmail(tempEmail);
-
-        //update the user info
-        if(user == null){
-            throw new UserNotFoundException("Cannot find a user with email");
-        }else{
-            user.setEmail(email);
-        }
-        //save the user
-        userRepo.save(user);
-
-        return new ApiResponseDTO<String>(true,"Email updated successfully",user.toString() );
-    }
-
-    public ApiResponseDTO<String> updatePassword(String newPassword, String email) {
-        //clean the data
-        String pswrd = newPassword.strip();
-        String userEmail = email.strip();
-
-        //find user by email
-        UserTable user = userRepo.findByEmail(userEmail);
-
-        //hash new password
-        if(user ==  null){
-            throw new UserNotFoundException("The email address " +userEmail+" does not match any existing user account. " +
-                    "Password updates require a valid email to identify the user record to update.");
-        }else {
-            user.setUserPassword(passwordEncoder.encode(pswrd));
-        }
-
-        //save the user
-        userRepo.save(user);
-
-        return new ApiResponseDTO<String>(true,"Email updated successfully",user.toString() );
-    }
+    ////////////////////
+    /// GET METHODS ///
+    ////////////////////
 
     public ApiResponseDTO<UserInfoDTO> getUser(String userEmail) {
         //clean the data
@@ -165,5 +107,146 @@ public class UserService {
         }
         //send back the user dto
         return new ApiResponseDTO<UserInfoDTO>(true,"User Found", userInfo);
+    }
+
+    /////////////////////
+    /// PATCH METHODS ///
+    /////////////////////
+
+    public ApiResponseDTO<String> updateUsername(UpdateUserInfoDTO userInfoDTO, HttpServletRequest request) {
+       //clean the data
+        String username = userInfoDTO.getNewData().strip();
+        String userEmail = userInfoDTO.getEmail().strip().toLowerCase();
+
+        if(isRequestValid(userEmail, request)) {
+            //validate the input some more
+            if(username.length() > MAX_USERNAME_LENGTH){
+                throw new IllegalArgumentException("Username is too long");
+            }
+
+            //get the user from the db
+            UserTable user = userRepo.findByEmail(userEmail);
+
+            //update the user info
+            if(user == null){
+                throw new UserNotFoundException("The email address provided does not match any existing user account. " +
+                        "Username updates require a valid email to identify the user record to update.");
+            }else {
+                user.setUsername(username);
+            }
+            //save the user
+            try {
+                userRepo.save(user);
+            } catch (Exception e) {
+                throw new DatabaseErrorException(e.getMessage());
+            }
+
+            return new ApiResponseDTO<String>(true,"Username updated successfully",user.toString() );
+        }
+
+        throw new InvalidRequestException("Access denied: You can only modify your own account.");
+    }
+
+    public ApiResponseDTO<String> updateEmail(UpdateEmailDTO emailDTO, HttpServletRequest request) {
+        //clean the data
+        String newEmail = emailDTO.getNewEmail().strip().toLowerCase();
+        String oldEmail = emailDTO.getOldEmail().strip().toLowerCase();
+
+        if(isRequestValid(oldEmail, request)) {
+            //validate the input some more
+            if (newEmail.length() > MAX_EMAIL_LENGTH) {
+                throw new IllegalArgumentException("Email is too long");
+            }
+
+            //get the user from the db
+            UserTable user = userRepo.findByEmail(oldEmail);
+
+            //update the user info
+            if (user == null) {
+                throw new UserNotFoundException("Cannot find a user with newEmail");
+            } else {
+                user.setEmail(newEmail);
+            }
+            //save the user
+            try {
+                userRepo.save(user);
+            } catch (Exception e) {
+                throw new DatabaseErrorException(e.getMessage());
+            }
+
+            return new ApiResponseDTO<String>(true, "Email updated successfully", user.toString());
+        }
+
+        throw new InvalidRequestException("Access denied: You can only modify your own account.");
+    }
+
+    public ApiResponseDTO<String> updatePassword(UpdateUserInfoDTO passwordDTO, HttpServletRequest request) {
+        //clean the data
+        String pswrd = passwordDTO.getNewData().strip();
+        String userEmail = passwordDTO.getEmail().strip().toLowerCase();
+
+        if(isRequestValid(userEmail, request)) {
+            //find user by email
+            UserTable user = userRepo.findByEmail(userEmail);
+
+            //hash new password
+            if(user ==  null){
+                throw new UserNotFoundException("The email address " +userEmail+" does not match any existing user account. " +
+                        "Password updates require a valid email to identify the user record to update.");
+            }else {
+                user.setUserPassword(passwordEncoder.encode(pswrd));
+            }
+
+            //save the user
+            try {
+                userRepo.save(user);
+            } catch (Exception e) {
+                throw new DatabaseErrorException(e.getMessage());
+            }
+
+            return new ApiResponseDTO<String>(true,"password updated successfully",user.toString());
+        }
+        throw new InvalidRequestException("Access denied: You can only modify your own account.");
+    }
+
+    //////////////////////
+    /// DELETE METHODS ///
+    //////////////////////
+
+    public ApiResponseDTO<String> deleteUser(GetUserDTO user) {
+        //clean data
+        String userEmail = user.getEmail().strip().toLowerCase();
+
+        //find user with that email
+        UserTable userToBeDeleted = userRepo.findByEmail(userEmail);
+
+        if(userToBeDeleted == null){
+            throw new UserNotFoundException("A user associated with that email could not be found");
+        }
+        //delete user
+        userRepo.delete(userToBeDeleted);
+
+        return new ApiResponseDTO<String>(true,"user "+userToBeDeleted.getEmail()+" successfully deleted", null);
+    }
+
+    ///////////////////////
+    /// PRIVATE METHODS ///
+    ///////////////////////
+
+    private boolean isRequestValid(String userEmail, HttpServletRequest request){
+        String authHeader = request.getHeader("Authorization");
+        String token;
+        String JWTemail = null;
+
+        if(authHeader != null && authHeader.startsWith("Bearer ")){
+            token = authHeader.substring(7);//jwt string starts at 7th index of header string
+            JWTemail = jwtService.extractEmail(token);
+        }
+
+        if (userEmail.equals(JWTemail)){
+            return true;
+        }
+
+        return false;
     }
 }
