@@ -1,15 +1,29 @@
 package com.example.notesAPI.dto.UITemplate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class CreateTemplateDTO {
-    private Integer userID; //using big int make it so that the value can be nullable
+    private String email;
     private String templateName;
     private String templateDetails;
 
-    public CreateTemplateDTO(){
+    @JsonIgnore
+    public boolean isValid(){
+        if (email == null || email.isBlank()
+        || templateName == null || templateName.isBlank()
+        || templateDetails == null || templateDetails.isBlank()){
+
+            return false;
+        }
+
+        return true;
     }
+
+
 }

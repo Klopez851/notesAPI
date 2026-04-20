@@ -1,13 +1,12 @@
 package com.example.notesAPI.controller;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import io.restassured.http.Header;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserControllerTest {
 
     //test naming convention "method_scenario_expected"
@@ -58,6 +57,7 @@ class UserControllerTest {
     }
 
     @Test
+    @Order(1)
     void createUser_UserDoesExists_ConflictResponse(){
         given()
                 .when()
@@ -304,7 +304,19 @@ class UserControllerTest {
     @AfterAll
     static void restDB() {
         //RESET EMAIL FOR SAMPLE USER
-        Header authHeaderEmailReset = new Header("Authorization", "Bearer "+authToken);
+        String updateToken =
+                given() //prerequisites
+                        .when()// action to be performed
+                        .contentType("application/json")
+                        .body("""
+                        {
+                            "email":"sampleemailtest@gmail.com",
+                            "userPassword":"qwertyisfun"
+                        }""")
+                        .post("/login")
+                        .then() //what needs to be asserted/validated/tested for correctness
+                        .extract().body().asString();
+        Header authHeaderEmailReset = new Header("Authorization", "Bearer "+updateToken);
 
         given()
                 .when()

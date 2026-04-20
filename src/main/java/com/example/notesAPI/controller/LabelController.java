@@ -73,7 +73,4 @@ public class LabelController {
 
         return service.deleteLabel(labelID);
     }
-
-    //delete
-    //delete label
 }
