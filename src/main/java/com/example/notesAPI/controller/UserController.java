@@ -54,7 +54,7 @@ public class UserController {
     @PatchMapping("/updateEmail")
     public ApiResponseDTO<String> updateEmail(@RequestBody UpdateEmailDTO emailDTO, HttpServletRequest request){
         if(!emailDTO.isValid()){
-            throw new IllegalArgumentException("Must provide a new email");
+            throw new IllegalArgumentException("Must provide new and old email");
         }
         return service.updateEmail(emailDTO, request);
     }

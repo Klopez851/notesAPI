@@ -1,5 +1,6 @@
 package com.example.notesAPI.controller;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import io.restassured.http.Header;
@@ -274,6 +275,21 @@ class UserControllerTest {
                 .assertThat()
                 .statusCode(200);
     }
+
+    @Test
+    void updateEmail_EmptyReqBody_BadResponse() {
+        Header authHeader = new Header("Authorization", "Bearer "+authToken);
+
+        given()
+                .when()
+                .contentType("application/json")
+                .header(authHeader)
+                .body("")
+                .patch("/updateEmail")
+                .then()
+                .assertThat()
+                .statusCode(400);
+    }
 //
 //    @Test
 //    void updateUsername() {
@@ -284,21 +300,54 @@ class UserControllerTest {
 //    }
 
 
-//    //test reset
-//    @Test
-//    void restTestEmail() {
-//        Header authHeader = new Header("Authorization", "Bearer "+authToken);
-//
-//        given()
-//                .when()
-//                .contentType("application/json")
-//                .header(authHeader)
-//                .body("""
-//                        {
-//                            "oldEmail":"sampleemailtest@gmail.com",
-//                            "newEmail":"sampleemail@gmail.com"
-//                        }
-//                        """)
-//                .patch("/updateEmail");
-//    }
+    //test reset
+    @AfterAll
+    static void restDB() {
+        //RESET EMAIL FOR SAMPLE USER
+        Header authHeaderEmailReset = new Header("Authorization", "Bearer "+authToken);
+
+        given()
+                .when()
+                .contentType("application/json")
+                .header(authHeaderEmailReset)
+                .body("""
+                        {
+                            "oldEmail":"sampleemailtest@gmail.com",
+                            "newEmail":"sampleemail@gmail.com"
+                        }
+                        """)
+                .patch("/updateEmail");
+
+        //DELETE NEWLY CREATED USER
+
+        //generate a new token with the credentials of the user to be deleted
+        String delToken =
+                given() //prerequisites
+                        .when()// action to be performed
+                        .contentType("application/json")
+                        .body("""
+                        {
+                            "email":"sampleemail2@gmail.com",
+                            "userPassword":"qwertyisfun2"
+                        }""")
+                        .post("/login")
+                        .then() //what needs to be asserted/validated/tested for correctness
+                        .extract().body().asString();
+
+        Header authHeaderDelUser = new Header("Authorization", "Bearer "+delToken);
+
+        given()
+                .when()
+                .contentType("application/json")
+                .header(authHeaderDelUser)
+                .body("""
+                        {
+                            "email":"sampleemail2@gmail.com"
+                        }
+                        """)
+                .delete("/deleteUser")
+                .then()
+                .assertThat()
+                .statusCode(200);
+    }
 }
