@@ -28,8 +28,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     //user not found
-    @ExceptionHandler(UserNotFoundException.class)
-    public ProblemDetail handleUserNotFound (UserNotFoundException ex, WebRequest request){
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail handleUserNotFound (ResourceNotFoundException ex, WebRequest request){
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setInstance(URI.create(request.getDescription(false)));
         return problemDetail;

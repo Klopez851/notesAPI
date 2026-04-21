@@ -3,7 +3,7 @@ package com.example.notesAPI.service;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.Label.LabelDTO;
 import com.example.notesAPI.errorHandler.IdNotFoundException;
-import com.example.notesAPI.errorHandler.UserNotFoundException;
+import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.model.Label;
 import com.example.notesAPI.model.UserTable;
 import com.example.notesAPI.repository.LabelRepository;
@@ -51,7 +51,7 @@ public class LabelService {
         UserTable user = userRepo.findByEmail(email);
 
         if(user == null){
-            throw new UserNotFoundException("Please provide a valid email to fetch labels");
+            throw new ResourceNotFoundException("Please provide a valid email to fetch labels");
         }
 
         //get all labels associated with that user

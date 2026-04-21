@@ -5,7 +5,7 @@ import com.example.notesAPI.dto.User.*;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
 import com.example.notesAPI.errorHandler.InvalidRequestException;
 import com.example.notesAPI.errorHandler.UserAlreadyExistsException;
-import com.example.notesAPI.errorHandler.UserNotFoundException;
+import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.model.UserTable;
 import com.example.notesAPI.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,7 +44,7 @@ public class UserService {
             return jwtService.generateToken(user.getEmail());
         }
         else {
-            throw new UserNotFoundException("User not found with the email "+ user.getEmail());
+            throw new ResourceNotFoundException("User not found with the email "+ user.getEmail());
         }
     }
 
@@ -101,7 +101,7 @@ public class UserService {
         UserTable user = userRepo.findByEmail(email);
         //make sure the user exists
         if(user == null){
-            throw new UserNotFoundException("User with the email "+email+" not found");
+            throw new ResourceNotFoundException("User with the email "+email+" not found");
         }else{
             userInfo = new UserInfoDTO(user.getUsername(),user.getEmail(),null);
         }
@@ -129,7 +129,7 @@ public class UserService {
 
             //update the user info
             if(user == null){
-                throw new UserNotFoundException("The email address provided does not match any existing user account. " +
+                throw new ResourceNotFoundException("The email address provided does not match any existing user account. " +
                         "Username updates require a valid email to identify the user record to update.");
             }else {
                 user.setUsername(username);
@@ -163,7 +163,7 @@ public class UserService {
 
             //update the user info
             if (user == null) {
-                throw new UserNotFoundException("Cannot find a user with newEmail");
+                throw new ResourceNotFoundException("Cannot find a user with newEmail");
             } else {
                 user.setEmail(newEmail);
             }
@@ -192,7 +192,7 @@ public class UserService {
 
             //hash new password
             if(user ==  null){
-                throw new UserNotFoundException("The email address " +userEmail+" does not match any existing user account. " +
+                throw new ResourceNotFoundException("The email address " +userEmail+" does not match any existing user account. " +
                         "Password updates require a valid email to identify the user record to update.");
             }else {
                 user.setUserPassword(passwordEncoder.encode(pswrd));
@@ -223,7 +223,7 @@ public class UserService {
             UserTable userToBeDeleted = userRepo.findByEmail(userEmail);
 
             if(userToBeDeleted == null){
-                throw new UserNotFoundException("A user associated with that email could not be found");
+                throw new ResourceNotFoundException("A user associated with that email could not be found");
             }
             //delete user
             userRepo.delete(userToBeDeleted);

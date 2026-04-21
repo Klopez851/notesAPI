@@ -2,7 +2,7 @@ package com.example.notesAPI.controller;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.User.*;
-import com.example.notesAPI.errorHandler.UserNotFoundException;
+import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -82,7 +82,7 @@ public class UserController {
     @DeleteMapping("/deleteUser")
     public ApiResponseDTO<String> deleteUser(@RequestBody GetUserDTO user, HttpServletRequest request){
         if(!user.isValid()){
-            throw new UserNotFoundException("please provide a valid email");
+            throw new ResourceNotFoundException("please provide a valid email");
         }
         return service.deleteUser(user, request);
         //ensure user and jwt token info matches

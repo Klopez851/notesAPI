@@ -1,6 +1,6 @@
 package com.example.notesAPI.service;
 
-import com.example.notesAPI.errorHandler.UserNotFoundException;
+import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.model.MyUserDetails;
 import com.example.notesAPI.model.UserTable;
 import com.example.notesAPI.repository.UserRepository;
@@ -21,10 +21,10 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     //the email is the users username
-    public UserDetails loadUserByUsername(String email) throws UserNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws ResourceNotFoundException {
         UserTable user = userRepo.findByEmail(email) ;
         if(user == null){
-            throw  new UserNotFoundException("user not found");
+            throw  new ResourceNotFoundException("user not found");
         }
 
         return new MyUserDetails(user);
