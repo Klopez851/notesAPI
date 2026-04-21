@@ -2,6 +2,7 @@ package com.example.notesAPI.controller;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.UITemplate.CreateTemplateDTO;
+import com.example.notesAPI.dto.UITemplate.GetTemplateDTO;
 import com.example.notesAPI.service.UITemplateService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -28,6 +30,19 @@ public class UITemplateController {
         }
         return service.createTemplate(template, request);
     }
+
+    ////////////////////
+    /// GET METHODS ///
+    ////////////////////
+
+    @GetMapping("/getTemplates")
+    public ApiResponseDTO<List<GetTemplateDTO>> getTemplates(@RequestBody HashMap<String, String> userEmail, HttpServletRequest request){
+        if(userEmail.get("email") == null || userEmail.get("email").isBlank()){
+            throw new IllegalArgumentException("please provide a valid email");
+        }
+        return service.getTemplates(userEmail,request);
+    }
+
     //////////////////////
     /// DELETE METHODS ///
     //////////////////////

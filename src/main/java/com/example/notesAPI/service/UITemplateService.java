@@ -2,6 +2,7 @@ package com.example.notesAPI.service;
 
 import com.example.notesAPI.dto.UITemplate.CreateTemplateDTO;
 import com.example.notesAPI.dto.ApiResponseDTO;
+import com.example.notesAPI.dto.UITemplate.GetTemplateDTO;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
 import com.example.notesAPI.errorHandler.IdNotFoundException;
 import com.example.notesAPI.errorHandler.ForbiddenRequestException;
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,6 +65,30 @@ public class UITemplateService {
             );
         }
         throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
+    }
+
+    ///////////////////
+    /// GET METHODS ///
+    ///////////////////
+
+    public ApiResponseDTO<List<GetTemplateDTO>> getTemplates(HashMap<String, String> userEmail, HttpServletRequest request) {
+        //clean data
+        String email = userEmail.get("email").strip().toLowerCase();
+
+        //validate the request
+        if (isRequestValid(email,request)){
+            //ensure user exists
+            UserTable user = userRepo.findByEmail(email);
+
+            if(user != null){
+                //get templates associated with user
+                List<GetTemplateDTO> templates = templateRepo.findAllByUser(user.getUserID());
+                return new ApiResponseDTO<List<GetTemplateDTO>>(true, "templates found", templates);
+
+            }else{throw new ResourceNotFoundException("User associated with that email could not be found");}
+
+        }
+        throw new ForbiddenRequestException("Access denied: You can only get information from your own account.");
     }
 
     //////////////////////
@@ -124,5 +150,6 @@ public class UITemplateService {
 
         return false;
     }
+
 }
 
