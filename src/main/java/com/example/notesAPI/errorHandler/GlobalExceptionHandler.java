@@ -44,8 +44,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     //user making request and user record being afffected dont match
-    @ExceptionHandler(InvalidRequestException.class)
-    public ProblemDetail handleInvalidRequest(InvalidRequestException ex, WebRequest request){
+    @ExceptionHandler(ForbiddenRequestException.class)
+    public ProblemDetail handleInvalidRequest(ForbiddenRequestException ex, WebRequest request){
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
         problemDetail.setInstance(URI.create(request.getDescription(false)));
         return problemDetail;

@@ -4,7 +4,7 @@ import com.example.notesAPI.dto.UITemplate.CreateTemplateDTO;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
 import com.example.notesAPI.errorHandler.IdNotFoundException;
-import com.example.notesAPI.errorHandler.InvalidRequestException;
+import com.example.notesAPI.errorHandler.ForbiddenRequestException;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.model.UITemplate;
 import com.example.notesAPI.model.UserTable;
@@ -62,7 +62,7 @@ public class UITemplateService {
                     template.toString()
             );
         }
-        throw new InvalidRequestException("Access denied: You can only modify your own account.");
+        throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
     //////////////////////
@@ -101,7 +101,7 @@ public class UITemplateService {
                 throw new IdNotFoundException("A template associated with that ID could not be found");
             }
         }
-        throw new InvalidRequestException("Access denied: You can only modify your own account.");
+        throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
     ///////////////////////

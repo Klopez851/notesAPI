@@ -1,7 +1,7 @@
 package com.example.notesAPI.errorHandler;
 
-public class InvalidRequestException extends RuntimeException {
-    public InvalidRequestException(String message) {
+public class ForbiddenRequestException extends RuntimeException {
+    public ForbiddenRequestException(String message) {
         super(message);
     }
 }

@@ -3,7 +3,7 @@ package com.example.notesAPI.service;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.User.*;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
-import com.example.notesAPI.errorHandler.InvalidRequestException;
+import com.example.notesAPI.errorHandler.ForbiddenRequestException;
 import com.example.notesAPI.errorHandler.UserAlreadyExistsException;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.model.UserTable;
@@ -144,7 +144,7 @@ public class UserService {
             return new ApiResponseDTO<String>(true,"Username updated successfully",user.toString() );
         }
 
-        throw new InvalidRequestException("Access denied: You can only modify your own account.");
+        throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
     public ApiResponseDTO<String> updateEmail(UpdateEmailDTO emailDTO, HttpServletRequest request) {
@@ -178,7 +178,7 @@ public class UserService {
             return new ApiResponseDTO<String>(true, "Email updated successfully", jwtService.generateToken(newEmail));
         }
 
-        throw new InvalidRequestException("Access denied: You can only modify your own account.");
+        throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
     public ApiResponseDTO<String> updatePassword(UpdateUserInfoDTO passwordDTO, HttpServletRequest request) {
@@ -207,7 +207,7 @@ public class UserService {
 
             return new ApiResponseDTO<String>(true,"password updated successfully",user.toString());
         }
-        throw new InvalidRequestException("Access denied: You can only modify your own account.");
+        throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
     //////////////////////
@@ -230,7 +230,7 @@ public class UserService {
 
             return new ApiResponseDTO<String>(true,"user "+userToBeDeleted.getEmail()+" successfully deleted", null);
         }
-        throw new InvalidRequestException("Access denied: You can only modify your own account.");
+        throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
     ///////////////////////
