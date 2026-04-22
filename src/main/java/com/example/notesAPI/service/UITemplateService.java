@@ -41,14 +41,14 @@ public class UITemplateService {
         //ensure person making the request and the user creating the template match
         if(isRequestValid(email,request)) {
             //find user in db
-            UserTable user = userRepo.findByEmail(email);
-            if (user == null) {
+            Optional<UserTable> user = userRepo.findByEmail(email);
+            if (!user.isPresent()) {
                 throw new ResourceNotFoundException("please provide a valid email");
             }
 
             //create a template
             UITemplate template = new UITemplate();
-            template.setUser(user);
+            template.setUser(user.get());
             template.setTemplateName(templateName);
             template.setTemplateDetails(templateDetails);
 
@@ -79,11 +79,11 @@ public class UITemplateService {
         //validate the request
         if (isRequestValid(email,request)){
             //ensure user exists
-            UserTable user = userRepo.findByEmail(email);
+            Optional<UserTable> user = userRepo.findByEmail(email);
 
-            if(user != null){
+            if(!user.isPresent()){
                 //get templates associated with user
-                List<GetTemplateDTO> templates = templateRepo.findAllByUser(user.getUserID());
+                List<GetTemplateDTO> templates = templateRepo.findAllByUser(user.get().getUserID());
                 return new ApiResponseDTO<List<GetTemplateDTO>>(true, "templates found", templates);
 
             }else{throw new ResourceNotFoundException("User associated with that email could not be found");}
@@ -106,11 +106,11 @@ public class UITemplateService {
         if(isRequestValid(email, request)){
             //ensure the templateDTO being updated belongs to the user making request
             Optional<UITemplate> template = templateRepo.findById(templateID);
-            UserTable user = userRepo.findByEmail(email);
+            Optional<UserTable> user = userRepo.findByEmail(email);
 
             if(template.isPresent()){
-                if(user != null){
-                    if(user.getUserID() == template.get().getUser().getUserID()){
+                if(user.isPresent()){
+                    if(user.get().getUserID() == template.get().getUser().getUserID()){
                         //save new template details
                         template.get().setTemplateDetails(newTemplateDetails);
                         templateRepo.save(template.get());
@@ -138,14 +138,14 @@ public class UITemplateService {
         //ensure request is valid (user making the request and user deleting the template are the same)
         if(isRequestValid(email,request)) {
             //ensure template exists and is associated with the user making the request
-            UserTable user = userRepo.findByEmail(email);
+            Optional<UserTable> user = userRepo.findByEmail(email);
             Optional<UITemplate> uiTemplate = templateRepo.findById(templateID);
 
             //delete template if the template exists, the user making the request exist, and if the template to be
             // deleted is associated with the user making the request
             if(uiTemplate.isPresent()){
-                if(user != null){
-                    if(uiTemplate.get().getUser().getUserID() == user.getUserID()){
+                if(user.isPresent()){
+                    if(uiTemplate.get().getUser().getUserID() == user.get().getUserID()){
                         //delete template
                         templateRepo.deleteById(uiTemplate.get().getTemplateID());
 
@@ -170,15 +170,20 @@ public class UITemplateService {
     ///////////////////////
 
     private boolean isRequestValid(String userEmail, HttpServletRequest request){
-        String authHeader = request.getHeader("Authorization");
         String token;
         String JWTemail = null;
 
+        //get auth header from request
+        String authHeader = request.getHeader("Authorization");
+
+        //ensure header isn't empty or wrongly formatted
         if(authHeader != null && authHeader.startsWith("Bearer ")){
+            //extract token and get email from token
             token = authHeader.substring(7);//jwt string starts at 7th index of header string
             JWTemail = jwtService.extractEmail(token);
         }
 
+        //ensure emails match
         if (userEmail.equals(JWTemail)){
             return true;
         }

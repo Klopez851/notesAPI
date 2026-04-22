@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -98,12 +99,12 @@ public class UserService {
         UserInfoDTO userInfo;
 
         //get the user from the db
-        UserTable user = userRepo.findByEmail(email);
+        Optional<UserTable> user = userRepo.findByEmail(email);
         //make sure the user exists
-        if(user == null){
+        if(!user.isPresent()){
             throw new ResourceNotFoundException("User with the email "+email+" not found");
         }else{
-            userInfo = new UserInfoDTO(user.getUsername(),user.getEmail(),null);
+            userInfo = new UserInfoDTO(user.get().getUsername(),user.get().getEmail(),null);
         }
         //send back the user dto
         return new ApiResponseDTO<UserInfoDTO>(true,"User Found", userInfo);
@@ -125,18 +126,18 @@ public class UserService {
             }
 
             //get the user from the db
-            UserTable user = userRepo.findByEmail(userEmail);
+            Optional<UserTable> user = userRepo.findByEmail(userEmail);
 
             //update the user info
-            if(user == null){
+            if(!user.isPresent()){
                 throw new ResourceNotFoundException("The email address provided does not match any existing user account. " +
                         "Username updates require a valid email to identify the user record to update.");
             }else {
-                user.setUsername(username);
+                user.get().setUsername(username);
             }
             //save the user
             try {
-                userRepo.save(user);
+                userRepo.save(user.get());
             } catch (Exception e) {
                 throw new DatabaseErrorException(e.getMessage());
             }
@@ -159,17 +160,17 @@ public class UserService {
             }
 
             //get the user from the db
-            UserTable user = userRepo.findByEmail(oldEmail);
+            Optional<UserTable> user = userRepo.findByEmail(oldEmail);
 
             //update the user info
-            if (user == null) {
+            if (!user.isPresent()) {
                 throw new ResourceNotFoundException("Cannot find a user with newEmail");
             } else {
-                user.setEmail(newEmail);
+                user.get().setEmail(newEmail);
             }
             //save the user
             try {
-                userRepo.save(user);
+                userRepo.save(user.get());
             } catch (Exception e) {
                 throw new DatabaseErrorException(e.getMessage());
             }
@@ -188,19 +189,19 @@ public class UserService {
 
         if(isRequestValid(userEmail, request)) {
             //find user by email
-            UserTable user = userRepo.findByEmail(userEmail);
+            Optional<UserTable> user = userRepo.findByEmail(userEmail);
 
             //hash new password
-            if(user ==  null){
+            if(!user.isPresent()){
                 throw new ResourceNotFoundException("The email address " +userEmail+" does not match any existing user account. " +
                         "Password updates require a valid email to identify the user record to update.");
             }else {
-                user.setUserPassword(passwordEncoder.encode(pswrd));
+                user.get().setUserPassword(passwordEncoder.encode(pswrd));
             }
 
             //save the user
             try {
-                userRepo.save(user);
+                userRepo.save(user.get());
             } catch (Exception e) {
                 throw new DatabaseErrorException(e.getMessage());
             }
@@ -220,15 +221,15 @@ public class UserService {
 
         if(isRequestValid(userEmail, request)) {
             //find user with that email
-            UserTable userToBeDeleted = userRepo.findByEmail(userEmail);
+            Optional<UserTable> userToBeDeleted = userRepo.findByEmail(userEmail);
 
-            if(userToBeDeleted == null){
+            if(!userToBeDeleted.isPresent()){
                 throw new ResourceNotFoundException("A user associated with that email could not be found");
             }
             //delete user
-            userRepo.delete(userToBeDeleted);
+            userRepo.delete(userToBeDeleted.get());
 
-            return new ApiResponseDTO<String>(true,"user "+userToBeDeleted.getEmail()+" successfully deleted", null);
+            return new ApiResponseDTO<String>(true,"user "+userToBeDeleted.get().getEmail()+" successfully deleted", null);
         }
         throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
@@ -238,15 +239,20 @@ public class UserService {
     ///////////////////////
 
     private boolean isRequestValid(String userEmail, HttpServletRequest request){
-        String authHeader = request.getHeader("Authorization");
         String token;
         String JWTemail = null;
 
+        //get auth header from request
+        String authHeader = request.getHeader("Authorization");
+
+        //ensure header isn't empty or wrongly formatted
         if(authHeader != null && authHeader.startsWith("Bearer ")){
+            //extract token and get email from token
             token = authHeader.substring(7);//jwt string starts at 7th index of header string
             JWTemail = jwtService.extractEmail(token);
         }
 
+        //ensure emails match
         if (userEmail.equals(JWTemail)){
             return true;
         }

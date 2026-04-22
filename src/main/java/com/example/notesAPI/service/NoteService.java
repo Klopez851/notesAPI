@@ -12,6 +12,7 @@ import com.example.notesAPI.repository.NotesRepository;
 import com.example.notesAPI.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -35,31 +36,31 @@ public class NoteService {
         String noteColor = noteDTO.hasColor() ? noteDTO.getNoteColor() : "";
 
         //get user
-        UserTable user = userRepo.findByEmail(userEmail);
+        Optional<UserTable> user = userRepo.findByEmail(userEmail);
 
         //get label
         if(!(noteLabel.isBlank())){
-            label = labelRepo.findByLabelNameAndUser(noteLabel, user.getUserID());
+            label = labelRepo.findByLabelNameAndUser(noteLabel, user.get().getUserID());
 
             //if label does exist, create it then fetch it
             if(label == null){
-                labelRepo.save(new Label(user, noteLabel));
-                label = labelRepo.findByLabelNameAndUser(noteLabel, user.getUserID());
+                labelRepo.save(new Label(user.get(), noteLabel));
+                label = labelRepo.findByLabelNameAndUser(noteLabel, user.get().getUserID());
             }
         }
         //get color
         if(!(noteColor.isBlank())){
-            color = noteColorRepo.findByColorHEXAndUser(noteColor, user.getUserID());
+            color = noteColorRepo.findByColorHEXAndUser(noteColor, user.get().getUserID());
 
             //if color doesnt exist, create it and the fetch it
             if(color == null){
-                noteColorRepo.save(new NoteColor(noteColor, user));
-                color = noteColorRepo.findByColorHEXAndUser(noteColor, user.getUserID());
+                noteColorRepo.save(new NoteColor(noteColor, user.get()));
+                color = noteColorRepo.findByColorHEXAndUser(noteColor, user.get().getUserID());
             }
         }
 
         //create note
-        Note note = new Note(user,noteTitle,noteContent,label, color);
+        Note note = new Note(user.get(),noteTitle,noteContent,label, color);
 
         //save the note
         noteRepo.save(note);

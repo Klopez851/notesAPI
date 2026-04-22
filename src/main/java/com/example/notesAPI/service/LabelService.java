@@ -38,13 +38,13 @@ public class LabelService {
 
         if(isRequestValid(email, request)) {
             //find user
-            UserTable user = userRepo.findByEmail(email);
+            Optional<UserTable> user = userRepo.findByEmail(email);
 
             // get user
-            if (user == null) {
+            if (!user.isPresent()) {
                 throw new IllegalArgumentException("Valid email needed to create label");
             } else {
-                label = new Label(user, labelName);
+                label = new Label(user.get(), labelName);
             }
 
             //store label
@@ -65,14 +65,14 @@ public class LabelService {
 
         if(isRequestValid(email, request)) {
             //get user
-            UserTable user = userRepo.findByEmail(email);
+            Optional<UserTable> user = userRepo.findByEmail(email);
 
-            if (user == null) {
+            if (!user.isPresent()) {
                 throw new ResourceNotFoundException("Please provide a valid email to fetch labels");
             }
 
             //get all labels associated with that user
-            List<LabelDTO> labels = labelRepo.findAllByUser(user.getUserID());
+            List<LabelDTO> labels = labelRepo.findAllByUser(user.get().getUserID());
 
             //return them
             return new ApiResponseDTO<List<LabelDTO>>(true, "labels successfully fetched", labels);
@@ -94,8 +94,8 @@ public class LabelService {
             //get label from db
             Optional<Label> label = labelRepo.findById(reqLabelID);
 
-            //make sure label isnt the same
-            if (label.isEmpty()) {
+            //make sure label exists the same
+            if (!label.isPresent()) {
                 throw new IdNotFoundException("A label with that ID doesnt exist");
             }
 
@@ -128,12 +128,12 @@ public class LabelService {
         if(isRequestValid(email, request)) {
             //ensure label and user exists
             Optional<Label> label = labelRepo.findById(labelID);
-            UserTable user = userRepo.findByEmail(email);
+            Optional<UserTable> user = userRepo.findByEmail(email);
 
             //delete user if label exists, if user exists, and is label is associated with the user
             if(label.isPresent()){
-                if(user != null){
-                    if(label.get().getUser().getUserID() == user.getUserID()){
+                if(user.isPresent()){
+                    if(label.get().getUser().getUserID() == user.get().getUserID()){
                         //delete label
                         labelRepo.delete(label.get());
                         return new ApiResponseDTO<String>(true, "label successfully deleted", null);
@@ -150,15 +150,20 @@ public class LabelService {
     ///////////////////////
 
     private boolean isRequestValid(String userEmail, HttpServletRequest request){
-        String authHeader = request.getHeader("Authorization");
         String token;
         String JWTemail = null;
 
+        //get auth header from request
+        String authHeader = request.getHeader("Authorization");
+
+        //ensure header isn't empty or wrongly formatted
         if(authHeader != null && authHeader.startsWith("Bearer ")){
+            //extract token and get email from token
             token = authHeader.substring(7);//jwt string starts at 7th index of header string
             JWTemail = jwtService.extractEmail(token);
         }
 
+        //ensure emails match
         if (userEmail.equals(JWTemail)){
             return true;
         }
