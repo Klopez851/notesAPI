@@ -3,6 +3,7 @@ package com.example.notesAPI.service;
 import com.example.notesAPI.dto.UITemplate.CreateTemplateDTO;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.UITemplate.GetTemplateDTO;
+import com.example.notesAPI.dto.UITemplate.UpdateTemplateDTO;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
 import com.example.notesAPI.errorHandler.IdNotFoundException;
 import com.example.notesAPI.errorHandler.ForbiddenRequestException;
@@ -91,6 +92,40 @@ public class UITemplateService {
         throw new ForbiddenRequestException("Access denied: You can only get information from your own account.");
     }
 
+    ///////////////////
+    /// PATCH METHODS ///
+    ///////////////////
+
+    public ApiResponseDTO<String> updateTemplateDetails(UpdateTemplateDTO templateDTO, HttpServletRequest request) {
+        //clean data
+        String email = templateDTO.getEmail().strip().toLowerCase();
+        String newTemplateDetails = templateDTO.getNewInfo().strip();
+        int templateID = Integer.parseInt(templateDTO.getTemplateID());
+
+        //validate request
+        if(isRequestValid(email, request)){
+            //ensure the templateDTO being updated belongs to the user making request
+            Optional<UITemplate> template = templateRepo.findById(templateID);
+            UserTable user = userRepo.findByEmail(email);
+
+            if(template.isPresent()){
+                if(user != null){
+                    if(user.getUserID() == template.get().getUser().getUserID()){
+                        //save new template details
+                        template.get().setTemplateDetails(newTemplateDetails);
+                        templateRepo.save(template.get());
+
+                        return new ApiResponseDTO<String>(true,
+                                "template successfully updated", template.get().toString());
+
+                    }else{throw new ResourceNotFoundException("Could not find ui template associated with that user");}
+                }else{throw new ResourceNotFoundException("UA user associated with that email could not be found");}
+            }else {throw new ResourceNotFoundException("A template associated with that ID could not be found");}
+
+        }
+        throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
+    }
+
     //////////////////////
     /// DELETE METHODS ///
     //////////////////////
@@ -150,6 +185,5 @@ public class UITemplateService {
 
         return false;
     }
-
 }
 

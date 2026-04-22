@@ -3,6 +3,7 @@ package com.example.notesAPI;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

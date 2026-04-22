@@ -1,6 +1,5 @@
 package com.example.notesAPI.repository;
 
-import com.example.notesAPI.dto.Label.LabelDTO;
 import com.example.notesAPI.dto.UITemplate.GetTemplateDTO;
 import com.example.notesAPI.model.UITemplate;
 import org.springframework.data.jpa.repository.JpaRepository;

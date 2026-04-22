@@ -3,11 +3,11 @@ package com.example.notesAPI.controller;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.UITemplate.CreateTemplateDTO;
 import com.example.notesAPI.dto.UITemplate.GetTemplateDTO;
+import com.example.notesAPI.dto.UITemplate.UpdateTemplateDTO;
 import com.example.notesAPI.service.UITemplateService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +42,21 @@ public class UITemplateController {
         }
         return service.getTemplates(userEmail,request);
     }
+
+    ////////////////////
+    /// PATCH METHODS ///
+    ////////////////////
+
+    @PatchMapping("/updateTemplateDetails")
+    public ApiResponseDTO<String> updateTemplateDetails(@RequestBody UpdateTemplateDTO template, HttpServletRequest request){
+        if(!template.isValid()){
+            throw new IllegalArgumentException("All fields (email, newInfo) must be filled out");
+        }
+
+        return service.updateTemplateDetails(template, request);
+    }
+
+    @PatchMapping("/updateTemplateName")
 
     //////////////////////
     /// DELETE METHODS ///
