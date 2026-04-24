@@ -1,5 +1,6 @@
 package com.example.notesAPI.dto.User;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class UpdateUserInfoDTO {
     private String email;
     private String newData;
 
+    @JsonIgnore
     public boolean isValid(){
         if((newData == null || newData.isBlank())
                 ||(oldData == null || oldData.isBlank())

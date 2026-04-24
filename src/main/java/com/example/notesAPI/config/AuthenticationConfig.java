@@ -31,7 +31,21 @@ public class AuthenticationConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{//HttpSecurity implements SecurityFilterChain, therefore returning a SecurityFilterChain object
         return http.csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/user/createUser","/user/login")//let these urls be open resources
+                        .requestMatchers("/user/createUser",
+                                "/user/login",
+
+                                //swagger links
+                                "/v1/api/**",
+                                "/v2/api-docs",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-resources",
+                                "/swagger-resources/**",
+                                "/configuration/ui",
+                                "/configuration/security",
+                                "/swagger-ui/**",
+                                "/webjars/**",
+                                "/swagger-ui.html")//let these urls be open resources
                         .permitAll()
                         .anyRequest().authenticated()) //else (aka url isnt in prev list), require authentication
                 .httpBasic(Customizer.withDefaults()) // requires login w/ postman
