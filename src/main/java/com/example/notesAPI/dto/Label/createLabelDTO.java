@@ -18,8 +18,8 @@ public class createLabelDTO {
 
     @JsonIgnore
     public boolean isValid(){
-        if(email==null || email.isBlank()
-                || label==null||label.isBlank()){
+        if((email==null || email.isBlank())
+                || (label==null||label.isBlank())){
             return false;
         }
         return true;

@@ -3,6 +3,7 @@ package com.example.notesAPI.service;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.Label.LabelDTO;
 import com.example.notesAPI.dto.Label.createLabelDTO;
+import com.example.notesAPI.dto.User.GetUserDTO;
 import com.example.notesAPI.errorHandler.IdNotFoundException;
 import com.example.notesAPI.errorHandler.ForbiddenRequestException;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
@@ -60,9 +61,9 @@ public class LabelService {
     /// GET METHODS ///
     ///////////////////
 
-    public ApiResponseDTO<List<LabelDTO>> getLabels(HashMap<String, String> userEmail, HttpServletRequest request) {
+    public ApiResponseDTO<List<LabelDTO>> getLabels(GetUserDTO userEmail, HttpServletRequest request) {
         //clean email
-        String email = userEmail.get("email").strip().toLowerCase();
+        String email = userEmail.getEmail().strip().toLowerCase();
 
         if(isRequestValid(email, request)) {
             //get user

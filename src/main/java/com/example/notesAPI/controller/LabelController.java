@@ -3,6 +3,7 @@ package com.example.notesAPI.controller;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.Label.LabelDTO;
 import com.example.notesAPI.dto.Label.createLabelDTO;
+import com.example.notesAPI.dto.User.GetUserDTO;
 import com.example.notesAPI.repository.LabelRepository;
 import com.example.notesAPI.repository.UserRepository;
 import com.example.notesAPI.service.LabelService;
@@ -30,7 +31,7 @@ public class LabelController {
     @Operation(summary = "Allows user to create a label", description = "Allows user to create a label")
     @PostMapping("/createLabel")
     public ApiResponseDTO<String> createLabel(@RequestBody createLabelDTO userLabel, HttpServletRequest request){
-        if((userLabel.isValid())){
+        if(!userLabel.isValid()){
             throw new IllegalArgumentException("label name must be filled out and a valid email must be provided");
         }
         return service.createLabel(userLabel, request);
@@ -40,10 +41,11 @@ public class LabelController {
     /// GET MAPPING/S ///
     /////////////////////
 
+    @Operation(summary = "fetches labels", description = "fetches all labels associated with the provided email")
     @GetMapping("/getLabels")
-    public ApiResponseDTO<List<LabelDTO>> getLabels(@RequestBody HashMap<String,String> userEmail, HttpServletRequest request){
+    public ApiResponseDTO<List<LabelDTO>> getLabels(@RequestBody GetUserDTO userEmail, HttpServletRequest request){
         //validate input
-        if(userEmail.get("email") == null || userEmail.get("email").isBlank()){
+        if(!userEmail.isValid()){
             throw new IllegalArgumentException("A valid email is needed to get labels");
         }
 
