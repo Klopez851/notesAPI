@@ -2,13 +2,15 @@ package com.example.notesAPI.controller;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.Label.LabelDTO;
+import com.example.notesAPI.dto.Label.createLabelDTO;
 import com.example.notesAPI.repository.LabelRepository;
 import com.example.notesAPI.repository.UserRepository;
 import com.example.notesAPI.service.LabelService;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
+import io.swagger.v3.oas.annotations.*;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,10 +27,10 @@ public class LabelController {
     /// POST MAPPING/S ///
     /////////////////////
 
+    @Operation(summary = "Allows user to create a label", description = "Allows user to create a label")
     @PostMapping("/createLabel")
-    public ApiResponseDTO<String> createLabel(@RequestBody HashMap<String, String> userLabel, HttpServletRequest request){
-        if((userLabel.get("email")==null || userLabel.get("email").isBlank())
-                || (userLabel.get("label")==null||userLabel.get("label").isBlank())){
+    public ApiResponseDTO<String> createLabel(@RequestBody createLabelDTO userLabel, HttpServletRequest request){
+        if((userLabel.isValid())){
             throw new IllegalArgumentException("label name must be filled out and a valid email must be provided");
         }
         return service.createLabel(userLabel, request);

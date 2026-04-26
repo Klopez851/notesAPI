@@ -81,7 +81,7 @@ public class UITemplateService {
             //ensure user exists
             Optional<UserTable> user = userRepo.findByEmail(email);
 
-            if(!user.isPresent()){
+            if(user.isPresent()){
                 //get templates associated with user
                 List<GetTemplateDTO> templates = templateRepo.findAllByUser(user.get().getUserID());
                 return new ApiResponseDTO<List<GetTemplateDTO>>(true, "templates found", templates);

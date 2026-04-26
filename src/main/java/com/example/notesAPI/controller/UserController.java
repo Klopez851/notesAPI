@@ -4,6 +4,7 @@ import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.User.*;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class UserController {
     /// POST MAPPINGS ///
     /////////////////////
 
+    @Operation(summary = "Creates a new user", description = "Creates a new user if provided with a non-existent email")
     @PostMapping("/createUser")
     public ApiResponseDTO createUser(@RequestBody UserInfoDTO user) {
         if(!user.isValid()){
@@ -27,6 +29,7 @@ public class UserController {
         return(service.createUser(user));
     }
 
+    @Operation(summary = "Allows user to login",description = "Allows user to log in and returns a custom JWT token")
     @PostMapping("/login")
     public String login(@RequestBody UserLoginDTO user){
         if(!user.isValid()){
@@ -39,6 +42,7 @@ public class UserController {
     /// GET MAPPINGS ///
     ////////////////////
 
+    @Operation(summary = "fetches user information",description = "fetches user information given that a valid email is provided")
     @GetMapping("/getUser")
     public ApiResponseDTO<UserInfoDTO> getUser(@RequestBody GetUserDTO user){
         if(!user.isValid()){
@@ -51,6 +55,7 @@ public class UserController {
     /// PATCH MAPPINGS ///
     //////////////////////
 
+    @Operation(summary = "Allows user to update their email",description = "Allows user to update their email to a non-existing email")
     @PatchMapping("/updateEmail")
     public ApiResponseDTO<String> updateEmail(@RequestBody UpdateEmailDTO emailDTO, HttpServletRequest request){
         if(!emailDTO.isValid()){
@@ -59,6 +64,7 @@ public class UserController {
         return service.updateEmail(emailDTO, request);
     }
 
+    @Operation(summary = "Allows user to update their username",description = "Allows user to update their username")
     @PatchMapping("/updateUsername")
     public ApiResponseDTO<String> updateUsername(@RequestBody UpdateUserInfoDTO usernameDTO, HttpServletRequest request){
         if(!usernameDTO.isValid()){
@@ -67,6 +73,7 @@ public class UserController {
         return service.updateUsername(usernameDTO, request);
     }
 
+    @Operation(summary = "Allows user to update their password",description = "Allows user to update their password")
     @PatchMapping("/updatePassword")
     public ApiResponseDTO<String> updatePassword(@RequestBody UpdateUserInfoDTO passwordDTO, HttpServletRequest request){
         if(!passwordDTO.isValid()){
@@ -78,7 +85,7 @@ public class UserController {
     //////////////////////
     /// DELETE MAPPING ///
     //////////////////////
-
+    @Operation(summary = "Allows user to delete their account",description = "Allows user to delete their account and everything related to them")
     @DeleteMapping("/deleteUser")
     public ApiResponseDTO<String> deleteUser(@RequestBody GetUserDTO user, HttpServletRequest request){
         if(!user.isValid()){

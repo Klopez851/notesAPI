@@ -2,6 +2,7 @@ package com.example.notesAPI.service;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.Label.LabelDTO;
+import com.example.notesAPI.dto.Label.createLabelDTO;
 import com.example.notesAPI.errorHandler.IdNotFoundException;
 import com.example.notesAPI.errorHandler.ForbiddenRequestException;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
@@ -29,12 +30,12 @@ public class LabelService {
     /// POST METHODS ///
     ////////////////////
 
-    public ApiResponseDTO<String> createLabel(HashMap<String, String> userLabel, HttpServletRequest request){
+    public ApiResponseDTO<String> createLabel(createLabelDTO userLabel, HttpServletRequest request){
         Label label;
 
         //clean data
-        String labelName = userLabel.get("label").strip();
-        String email =userLabel.get("email").strip().toLowerCase();
+        String labelName = userLabel.getLabel().strip();
+        String email =userLabel.getEmail().strip().toLowerCase();
 
         if(isRequestValid(email, request)) {
             //find user
