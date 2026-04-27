@@ -23,8 +23,6 @@ import java.util.List;
 @RequestMapping("/label")
 public class LabelController {
 
-    private LabelRepository labelRepo;
-    private UserRepository userRepo;
     private LabelService service;
 
     //////////////////////

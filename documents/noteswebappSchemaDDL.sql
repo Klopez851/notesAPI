@@ -56,8 +56,11 @@ ALTER TABLE note ADD CONSTRAINT fk_note_colorID FOREIGN KEY (color_id) REFERENCE
 ALTER TABLE label ADD CONSTRAINT fk_label_userID FOREIGN KEY (user_id) REFERENCES user_table(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE notecolor ADD CONSTRAINT fk_notecolor_userID FOREIGN KEY (user_id) REFERENCES user_table(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE notecolor ADD CONSTRAINT unique_user_noteColor UNIQUE (user_id, color_hex);
 
 ALTER TABLE uitemplate ADD CONSTRAINT fk_uitemplate_user_id FOREIGN KEY (user_id) REFERENCES user_table(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE uitemplate ADD CONSTRAINT unique_user_template UNIQUE (user_id, template_name);
+
 
 CREATE INDEX idx_user_table_ ON user_table (user_id);
 CREATE INDEX idx_user_table_email ON user_table (email);
@@ -71,5 +74,3 @@ CREATE INDEX idx_notecolor_UserID ON notecolor (user_id);
 
 CREATE INDEX idx_UITemplate_ ON uitemplate (template_id);
 CREATE INDEX idx_uitemplate_user_id ON uitemplate (user_id);
-
-ALTER TABLE uitemplate ADD CONSTRAINT unique_user_template UNIQUE (user_id, template_name);
