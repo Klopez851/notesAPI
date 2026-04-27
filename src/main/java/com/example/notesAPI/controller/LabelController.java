@@ -5,7 +5,7 @@ import com.example.notesAPI.dto.Label.DeleteLabelDTO;
 import com.example.notesAPI.dto.Label.LabelDTO;
 import com.example.notesAPI.dto.Label.CreateLabelDTO;
 import com.example.notesAPI.dto.Label.UpdateLabelDTO;
-import com.example.notesAPI.dto.User.GetUserDTO;
+import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.repository.LabelRepository;
 import com.example.notesAPI.repository.UserRepository;
 import com.example.notesAPI.service.LabelService;
@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.*;
-import java.util.HashMap;
+
 import java.util.List;
 
 @AllArgsConstructor
@@ -46,7 +46,7 @@ public class LabelController {
 
     @Operation(summary = "fetches labels", description = "fetches all labels associated with the provided email")
     @GetMapping("/getLabels")
-    public ApiResponseDTO<List<LabelDTO>> getLabels(@RequestBody GetUserDTO userEmail, HttpServletRequest request){
+    public ApiResponseDTO<List<LabelDTO>> getLabels(@RequestBody EmailDTO userEmail, HttpServletRequest request){
         //validate input
         if(!userEmail.isValid()){
             throw new IllegalArgumentException("A valid email is needed to get labels");

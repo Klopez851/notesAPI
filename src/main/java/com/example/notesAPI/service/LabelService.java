@@ -5,7 +5,7 @@ import com.example.notesAPI.dto.Label.DeleteLabelDTO;
 import com.example.notesAPI.dto.Label.LabelDTO;
 import com.example.notesAPI.dto.Label.CreateLabelDTO;
 import com.example.notesAPI.dto.Label.UpdateLabelDTO;
-import com.example.notesAPI.dto.User.GetUserDTO;
+import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.errorHandler.IdNotFoundException;
 import com.example.notesAPI.errorHandler.ForbiddenRequestException;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
@@ -16,7 +16,7 @@ import com.example.notesAPI.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,7 +63,7 @@ public class LabelService {
     /// GET METHODS ///
     ///////////////////
 
-    public ApiResponseDTO<List<LabelDTO>> getLabels(GetUserDTO userEmail, HttpServletRequest request) {
+    public ApiResponseDTO<List<LabelDTO>> getLabels(EmailDTO userEmail, HttpServletRequest request) {
         //clean email
         String email = userEmail.getEmail().strip().toLowerCase();
 

@@ -1,6 +1,7 @@
 package com.example.notesAPI.service;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
+import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.dto.User.*;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
 import com.example.notesAPI.errorHandler.ForbiddenRequestException;
@@ -215,7 +216,7 @@ public class UserService {
     /// DELETE METHODS ///
     //////////////////////
 
-    public ApiResponseDTO<String> deleteUser(GetUserDTO user, HttpServletRequest request) {
+    public ApiResponseDTO<String> deleteUser(EmailDTO user, HttpServletRequest request) {
         //clean data
         String userEmail = user.getEmail().strip().toLowerCase();
 

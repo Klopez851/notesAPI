@@ -1,6 +1,7 @@
 package com.example.notesAPI.controller;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
+import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.dto.User.*;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.service.UserService;
@@ -46,7 +47,7 @@ public class UserController {
 
     @Operation(summary = "fetches user information",description = "fetches user information given that a valid email is provided")
     @GetMapping("/getUser")
-    public ApiResponseDTO<UserInfoDTO> getUser(@RequestBody GetUserDTO user){
+    public ApiResponseDTO<UserInfoDTO> getUser(@RequestBody EmailDTO user){
         if(!user.isValid()){
             throw  new IllegalArgumentException("All fields must be filled out");
         }
@@ -89,7 +90,7 @@ public class UserController {
     //////////////////////
     @Operation(summary = "Allows user to delete their account",description = "Allows user to delete their account and everything related to them")
     @DeleteMapping("/deleteUser")
-    public ApiResponseDTO<String> deleteUser(@RequestBody GetUserDTO user, HttpServletRequest request){
+    public ApiResponseDTO<String> deleteUser(@RequestBody EmailDTO user, HttpServletRequest request){
         if(!user.isValid()){
             throw new ResourceNotFoundException("please provide a valid email");
         }

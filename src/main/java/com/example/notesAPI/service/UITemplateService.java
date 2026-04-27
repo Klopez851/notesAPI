@@ -1,7 +1,9 @@
 package com.example.notesAPI.service;
 
+import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.dto.UITemplate.CreateTemplateDTO;
 import com.example.notesAPI.dto.ApiResponseDTO;
+import com.example.notesAPI.dto.UITemplate.DeleteUITemplateDTO;
 import com.example.notesAPI.dto.UITemplate.GetTemplateDTO;
 import com.example.notesAPI.dto.UITemplate.UpdateTemplateDTO;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
@@ -72,9 +74,9 @@ public class UITemplateService {
     /// GET METHODS ///
     ///////////////////
 
-    public ApiResponseDTO<List<GetTemplateDTO>> getTemplates(HashMap<String, String> userEmail, HttpServletRequest request) {
+    public ApiResponseDTO<List<GetTemplateDTO>> getTemplates(EmailDTO userEmail, HttpServletRequest request) {
         //clean data
-        String email = userEmail.get("email").strip().toLowerCase();
+        String email = userEmail.getEmail().strip().toLowerCase();
 
         //validate the request
         if (isRequestValid(email,request)){
@@ -130,10 +132,10 @@ public class UITemplateService {
     /// DELETE METHODS ///
     //////////////////////
 
-    public ApiResponseDTO<String> deleteTemplate(HashMap<String, String> template, HttpServletRequest request) {
+    public ApiResponseDTO<String> deleteTemplate(DeleteUITemplateDTO template, HttpServletRequest request) {
         //clean data
-        String email = template.get("email").strip().toLowerCase();
-        int templateID = Integer.parseInt(template.get("templateID"));
+        String email = template.getEmail().strip().toLowerCase();
+        int templateID = Integer.parseInt(template.getTemplateID());
 
         //ensure request is valid (user making the request and user deleting the template are the same)
         if(isRequestValid(email,request)) {
