@@ -1,13 +1,15 @@
 package com.example.notesAPI.controller;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
+import com.example.notesAPI.dto.Label.DeleteLabelDTO;
 import com.example.notesAPI.dto.Label.LabelDTO;
-import com.example.notesAPI.dto.Label.createLabelDTO;
+import com.example.notesAPI.dto.Label.CreateLabelDTO;
+import com.example.notesAPI.dto.Label.UpdateLabelDTO;
 import com.example.notesAPI.dto.User.GetUserDTO;
 import com.example.notesAPI.repository.LabelRepository;
 import com.example.notesAPI.repository.UserRepository;
 import com.example.notesAPI.service.LabelService;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
+@Tag(name = "Label Endpoints")
 @RequestMapping("/label")
 public class LabelController {
 
@@ -28,9 +31,9 @@ public class LabelController {
     /// POST MAPPING/S ///
     /////////////////////
 
-    @Operation(summary = "Allows user to create a label", description = "Allows user to create a label")
+    @Operation(summary = "Creates a label", description = "Allows user to create a label")
     @PostMapping("/createLabel")
-    public ApiResponseDTO<String> createLabel(@RequestBody createLabelDTO userLabel, HttpServletRequest request){
+    public ApiResponseDTO<String> createLabel(@RequestBody CreateLabelDTO userLabel, HttpServletRequest request){
         if(!userLabel.isValid()){
             throw new IllegalArgumentException("label name must be filled out and a valid email must be provided");
         }
@@ -57,13 +60,10 @@ public class LabelController {
     ///////////////////////
     /// PATCH MAPPING/S ///
     ///////////////////////
-
+    @Operation(summary = "updates a label",description = "allows users to update any of the labels associated with the, as long as a different label name from the name stored is provided")
     @PatchMapping("/updateLabel")
-    public ApiResponseDTO<String> updateLabel(@RequestBody HashMap<String,String> reqLabel, HttpServletRequest request){
-        if((reqLabel.get("labelID") == null || reqLabel.get("labelID").isBlank())
-                || reqLabel.get("labelName") == null || reqLabel.get("labelName").isBlank()
-                || reqLabel.get("email")== null || reqLabel.get("email").isBlank()){
-
+    public ApiResponseDTO<String> updateLabel(@RequestBody UpdateLabelDTO reqLabel, HttpServletRequest request){
+        if(!reqLabel.isValid()){
             throw new IllegalArgumentException("All fields(labelID, labelName, email) must be filled");
         }
 
@@ -74,10 +74,10 @@ public class LabelController {
     /// DELETE MAPPING/S ///
     ////////////////////////
 
+    @Operation(summary = "deletes a label", description = "Allows users to delete any of their labels as long as they exists in the db")
     @DeleteMapping("/deleteLabel")
-    public ApiResponseDTO<String> deleteLabel(@RequestBody HashMap<String, String> label, HttpServletRequest request){
-        if(label.get("labelID") == null || label.get("labelID").isBlank()
-                || label.get("email")==null || label.get("email").isBlank()){
+    public ApiResponseDTO<String> deleteLabel(@RequestBody DeleteLabelDTO label, HttpServletRequest request){
+        if(!label.isValid()){
             throw new IllegalArgumentException("All fields (labelID, email) must be filled out");
         }
 

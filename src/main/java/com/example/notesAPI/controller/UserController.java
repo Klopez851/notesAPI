@@ -5,12 +5,14 @@ import com.example.notesAPI.dto.User.*;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
+@Tag(name = "User Endpoints")
 @RequestMapping("/user")
 public class UserController {
 

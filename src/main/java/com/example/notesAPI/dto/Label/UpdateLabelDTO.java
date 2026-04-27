@@ -9,19 +9,25 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class createLabelDTO {
+public class UpdateLabelDTO {
+
+    @Schema(name = "labelID",example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String labelID;
+
+    @Schema(name = "labelName",example = "interesting facts", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String labelName;
+
     @Schema(name = "email",example = "sampleemail@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String email;
 
-    @Schema(name = "label",example = "sample label", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String label;
-
     @JsonIgnore
     public boolean isValid(){
-        if((email==null || email.isBlank())
-                || (label==null||label.isBlank())){
+        if ((labelID == null || labelID.isBlank())
+                || (labelName == null || labelName.isBlank())
+                || (email== null || email.isBlank())){
             return false;
         }
         return true;
     }
+
 }

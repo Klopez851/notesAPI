@@ -1,8 +1,10 @@
 package com.example.notesAPI.service;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
+import com.example.notesAPI.dto.Label.DeleteLabelDTO;
 import com.example.notesAPI.dto.Label.LabelDTO;
-import com.example.notesAPI.dto.Label.createLabelDTO;
+import com.example.notesAPI.dto.Label.CreateLabelDTO;
+import com.example.notesAPI.dto.Label.UpdateLabelDTO;
 import com.example.notesAPI.dto.User.GetUserDTO;
 import com.example.notesAPI.errorHandler.IdNotFoundException;
 import com.example.notesAPI.errorHandler.ForbiddenRequestException;
@@ -31,7 +33,7 @@ public class LabelService {
     /// POST METHODS ///
     ////////////////////
 
-    public ApiResponseDTO<String> createLabel(createLabelDTO userLabel, HttpServletRequest request){
+    public ApiResponseDTO<String> createLabel(CreateLabelDTO userLabel, HttpServletRequest request){
         Label label;
 
         //clean data
@@ -86,11 +88,11 @@ public class LabelService {
     /// PATCH METHODS ///
     /////////////////////
 
-    public ApiResponseDTO<String> updateLabel(HashMap<String, String> reqLabel, HttpServletRequest request) {
+    public ApiResponseDTO<String> updateLabel(UpdateLabelDTO reqLabel, HttpServletRequest request) {
         //clean data
-        String reqLabelName = reqLabel.get("labelName").strip();
-        int reqLabelID = Integer.parseInt(reqLabel.get("labelID"));
-        String email = reqLabel.get("email").strip().toLowerCase();
+        String reqLabelName = reqLabel.getLabelName().strip();
+        int reqLabelID = Integer.parseInt(reqLabel.getLabelID());
+        String email = reqLabel.getEmail().strip().toLowerCase();
 
         if(isRequestValid(email, request)) {
             //get label from db
@@ -122,10 +124,10 @@ public class LabelService {
     /// DELETE METHODS ///
     //////////////////////
 
-    public ApiResponseDTO<String> deleteLabel(HashMap<String, String> reqlabel, HttpServletRequest request) {
+    public ApiResponseDTO<String> deleteLabel(DeleteLabelDTO reqlabel, HttpServletRequest request) {
         //clean/format data
-        String email = reqlabel.get("email").strip().toLowerCase();
-        int labelID = Integer.parseInt(reqlabel.get("labelID").strip());
+        String email = reqlabel.getEmail().strip().toLowerCase();
+        int labelID = Integer.parseInt(reqlabel.getLabelID().strip());
 
         if(isRequestValid(email, request)) {
             //ensure label and user exists
