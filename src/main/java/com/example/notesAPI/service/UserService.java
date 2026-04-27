@@ -143,7 +143,7 @@ public class UserService {
                 throw new DatabaseErrorException(e.getMessage());
             }
 
-            return new ApiResponseDTO<String>(true,"Username updated successfully",user.toString() );
+            return new ApiResponseDTO<String>(true,"Username updated successfully",user.get().toString() );
         }
 
         throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
@@ -207,7 +207,7 @@ public class UserService {
                 throw new DatabaseErrorException(e.getMessage());
             }
 
-            return new ApiResponseDTO<String>(true,"password updated successfully",user.toString());
+            return new ApiResponseDTO<String>(true,"password updated successfully",user.get().toString());
         }
         throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }

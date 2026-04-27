@@ -58,4 +58,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setInstance(URI.create(request.getDescription(false)));
         return problemDetail;
     }
+
+
 }
