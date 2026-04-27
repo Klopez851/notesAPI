@@ -62,7 +62,15 @@ public class UITemplateController {
         return service.updateTemplateDetails(template, request);
     }
 
-//    @PatchMapping("/updateTemplateName")
+    @Operation(summary = "updates a template's name", description = "updates a ui template's name")
+    @PatchMapping("/updateTemplateName")
+    public ApiResponseDTO<String> updateTemplateName(@RequestBody UpdateTemplateDTO templateDTO, HttpServletRequest request){
+        if(!templateDTO.isValid()){
+            throw new IllegalArgumentException("All fields (email, templateID, newInfo) must be filled out");
+        }
+
+        return service.updateTemplateName(templateDTO, request);
+    }
 
     //////////////////////
     /// DELETE METHODS ///

@@ -128,6 +128,37 @@ public class UITemplateService {
         throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
+    public ApiResponseDTO<String> updateTemplateName(UpdateTemplateDTO templateDTO, HttpServletRequest request) {
+        //clean data
+        String email = templateDTO.getEmail().strip().toLowerCase();
+        String newName = templateDTO.getNewInfo().strip();
+        int templateID = Integer.parseInt(templateDTO.getTemplateID().strip());
+
+        //validate request
+        if(isRequestValid(email,request)){
+            //ensure template exists
+            Optional<UITemplate> template = templateRepo.findById(templateID);
+
+            //ensure email is valid
+            Optional<UserTable> user = userRepo.findByEmail(email);
+
+            //ensure template is associated with the email/user provided
+            if (template.isPresent()){
+                if(user.isPresent()){
+                    if(template.get().getUser().getUserID() == user.get().getUserID()){
+                        //update and save template
+                        template.get().setTemplateName(newName);
+
+                        templateRepo.save(template.get());
+
+                        return new ApiResponseDTO<String>(true, "Template name successfully updated", null);
+                    }else{}
+                }else{throw new ResourceNotFoundException("A user associated with that email could not be found");}
+            }else{throw new ResourceNotFoundException("A template with that ID could not found");}
+        }
+        throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
+    }
+
     //////////////////////
     /// DELETE METHODS ///
     //////////////////////
