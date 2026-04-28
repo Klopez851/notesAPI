@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface NoteColorRepository extends JpaRepository<NoteColor, Integer> {
 
     NoteColor findByColorHEXAndUser(String colorHex, int userID);
+
+    boolean existsByColorHEX(String colorHex);
 }

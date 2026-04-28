@@ -5,7 +5,7 @@ import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.dto.User.*;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
 import com.example.notesAPI.errorHandler.ForbiddenRequestException;
-import com.example.notesAPI.errorHandler.UserAlreadyExistsException;
+import com.example.notesAPI.errorHandler.ResourceAlreadyExistsException;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.model.UserTable;
 import com.example.notesAPI.repository.UserRepository;
@@ -76,7 +76,7 @@ public class UserService {
 
         //check if user exists
         if(userRepo.existsByEmail(user.getEmail())){
-            throw new UserAlreadyExistsException("A user with that email already exists.");
+            throw new ResourceAlreadyExistsException("A user with that email already exists.");
         }
 
         //if it doesn't add the user to the db

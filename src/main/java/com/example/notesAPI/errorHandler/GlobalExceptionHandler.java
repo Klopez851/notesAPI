@@ -20,8 +20,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     //user already exists
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ProblemDetail handleDuplicateUser(UserAlreadyExistsException ex, WebRequest request){
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ProblemDetail handleDuplicateUser(ResourceAlreadyExistsException ex, WebRequest request){
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setInstance(URI.create(request.getDescription(false)));
         return problemDetail;
