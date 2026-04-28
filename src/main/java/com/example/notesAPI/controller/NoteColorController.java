@@ -1,18 +1,17 @@
 package com.example.notesAPI.controller;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
+import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.dto.noteColor.CreateNoteColorDTO;
-import com.example.notesAPI.repository.NoteColorRepository;
-import com.example.notesAPI.repository.UserRepository;
+import com.example.notesAPI.dto.noteColor.NoteColorDTO;
 import com.example.notesAPI.service.NoteColorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @Tag(name = "Note Color Endpoints")
@@ -41,7 +40,14 @@ public class NoteColorController {
     /// GET MAPPING/S ///
     /////////////////////
 
-    //Get all stored colors
+    @Operation(summary = "fetch colors", description = " fetch all colors associated with the provided emailDTO")
+    @GetMapping("/getNoteColors")
+    public ApiResponseDTO<List<NoteColorDTO>> getNoteColors(@RequestBody EmailDTO emailDTO, HttpServletRequest request){
+        if(!emailDTO.isValid()){
+            throw new IllegalArgumentException("Please provide a valid email");
+        }
+        return service.getNoteColors(emailDTO, request);
+    }
 
     ///////////////////////
     /// PATCH MAPPING/S ///
