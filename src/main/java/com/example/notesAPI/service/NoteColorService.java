@@ -3,6 +3,7 @@ package com.example.notesAPI.service;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.dto.noteColor.CreateNoteColorDTO;
+import com.example.notesAPI.dto.noteColor.DeleteNoteColorDTO;
 import com.example.notesAPI.dto.noteColor.NoteColorDTO;
 import com.example.notesAPI.dto.noteColor.UpdateNoteColorDTO;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
@@ -133,7 +134,34 @@ public class NoteColorService {
     /// DELETE METHOD/S ///
     ///////////////////////
 
-    //delete note color
+    public ApiResponseDTO<String> deleteCoteColor(DeleteNoteColorDTO colorDTO, HttpServletRequest request) {
+        //clean data
+        String email= colorDTO.getEmail().strip().toLowerCase();
+        int colorID= Integer.parseInt(colorDTO.getColorID().strip());
+
+        //validate request
+        if(isRequestValid(email,request)){
+            //ensure color to be deletes exists and is associated with the provided email
+            Optional<NoteColor> color = noteColorRepo.findById(colorID);
+            Optional<UserTable> user = userRepo.findByEmail(email);
+
+            if(color.isPresent()){
+                if(user.isPresent()){
+                    if(user.get().getUserID() == color.get().getUser().getUserID()){
+
+                        noteColorRepo.delete(color.get());
+
+                        return new ApiResponseDTO<String>(
+                                true,
+                                "color successfull deleted",
+                                null
+                        );
+                    }else{throw new ResourceNotFoundException("A color by that ID associated with the provided email could not be found");}
+                }else{throw new ResourceNotFoundException("A user by that email could not be found");}
+            }else{throw new ResourceNotFoundException("A color by that ID could not be found");}
+        }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
+
+    }
 
     ////////////////////////
     /// PRIVATE METHOD/S ///
