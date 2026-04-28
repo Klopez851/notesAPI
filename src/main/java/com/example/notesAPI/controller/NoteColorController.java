@@ -4,6 +4,7 @@ import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.dto.noteColor.CreateNoteColorDTO;
 import com.example.notesAPI.dto.noteColor.NoteColorDTO;
+import com.example.notesAPI.dto.noteColor.UpdateNoteColorDTO;
 import com.example.notesAPI.service.NoteColorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,9 +26,8 @@ public class NoteColorController {
     /// POST MAPPING/S ///
     //////////////////////
 
-    //create note color
     @Operation(summary = "stores a color", description = "stores a custom color by hex number")
-    @PostMapping("/createNoteColor")
+    @PostMapping("/createColor")
     public ApiResponseDTO<String> createNoteColor(@RequestBody CreateNoteColorDTO colorDTO, HttpServletRequest request){
         if(!colorDTO.isValid()){
             throw new IllegalArgumentException("All fields (email, colorHex) must be filled out");
@@ -41,7 +41,7 @@ public class NoteColorController {
     /////////////////////
 
     @Operation(summary = "fetch colors", description = " fetch all colors associated with the provided emailDTO")
-    @GetMapping("/getNoteColors")
+    @GetMapping("/getColors")
     public ApiResponseDTO<List<NoteColorDTO>> getNoteColors(@RequestBody EmailDTO emailDTO, HttpServletRequest request){
         if(!emailDTO.isValid()){
             throw new IllegalArgumentException("Please provide a valid email");
@@ -53,7 +53,14 @@ public class NoteColorController {
     /// PATCH MAPPING/S ///
     ///////////////////////
 
-    //update color hex
+    @Operation(summary = "updates an existing color", description = "updates an existing color")
+    @PatchMapping("/updateColor")
+    public ApiResponseDTO<String> updateNoteColor(@RequestBody UpdateNoteColorDTO colorDTO, HttpServletRequest request){
+        if(!colorDTO.isValid()){
+            throw new IllegalArgumentException("All fields (email, colorID, newColor) must be filled out");
+        }
+        return service.updateNoteColor(colorDTO, request);
+    }
 
     ////////////////////////
     /// DELETE MAPPING/S ///
