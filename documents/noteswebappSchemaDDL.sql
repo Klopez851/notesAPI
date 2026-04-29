@@ -11,19 +11,19 @@ CREATE TABLE user_table (
 
 CREATE TABLE note (
   note_id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  user_id INTEGER NOT NULL,
   title VARCHAR(255),
   text_content TEXT,
+  label_id INTEGER,
+  color_id INTEGER,
   pinned BOOLEAN NOT NULL,
   hidden BOOLEAN NOT NULL,
   cosmetics TEXT,
   view_only BOOLEAN NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  user_id INTEGER NOT NULL,
-  deleted BOOLEAN,
-  time_left_before_deletion TIMESTAMP,
-  label_id INTEGER,
-  color_id INTEGER
+  deleted BOOLEAN NOT NULL,
+  time_left_before_deletion TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ;
 
@@ -52,6 +52,7 @@ CREATE TABLE uitemplate (
 ALTER TABLE note ADD CONSTRAINT fk_note_userID FOREIGN KEY (user_id) REFERENCES user_table(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE note ADD CONSTRAINT fk_note_labelID FOREIGN KEY (label_id) REFERENCES label(label_id) ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE note ADD CONSTRAINT fk_note_colorID FOREIGN KEY (color_id) REFERENCES notecolor(color_id) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE note ADD CONSTRAINT chk_values_are_different CHECK (NOT (pinned = TRUE AND hidden = TRUE ));
 
 ALTER TABLE label ADD CONSTRAINT fk_label_userID FOREIGN KEY (user_id) REFERENCES user_table(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
 

@@ -13,7 +13,7 @@ public class CreateLabelDTO {
     @Schema(name = "email",example = "sampleemail@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String email;
 
-    @Schema(name = "label",example = "sample label", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(name = "labelID",example = "sample labelID", requiredMode = Schema.RequiredMode.REQUIRED)
     private String label;
 
     @JsonIgnore

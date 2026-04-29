@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LabelDTO {
+    //class is only used to send label objects to the frint, therefore no documentation w/ swagger needed
     private int labelID;
     private String labelName;
 

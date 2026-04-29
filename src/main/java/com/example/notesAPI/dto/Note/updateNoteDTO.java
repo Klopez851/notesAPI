@@ -14,7 +14,7 @@
 //    /////////////////
 //    private String title;
 //    private String content;
-//    private String label;
+//    private String labelID;
 //
 //    ///////////////////
 //    /// CONSTRUCTOR ///
@@ -25,7 +25,7 @@
 //        updateNoteDTO dto = new updateNoteDTO(
 //            note.getTitle(),
 //            note.getContent(),
-//            note.getLabel()
+//            note.getLabelID()
 //        );
 //        return dto;
 //    }

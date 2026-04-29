@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @Tag(name = "Label Endpoints")
-@RequestMapping("/label")
+@RequestMapping("/labelID")
 public class LabelController {
 
     private LabelService service;
@@ -29,11 +29,11 @@ public class LabelController {
     /// POST MAPPING/S ///
     /////////////////////
 
-    @Operation(summary = "Creates a label", description = "Allows user to create a label")
+    @Operation(summary = "Creates a labelID", description = "Allows user to create a labelID")
     @PostMapping("/createLabel")
     public ApiResponseDTO<String> createLabel(@RequestBody CreateLabelDTO userLabel, HttpServletRequest request){
         if(!userLabel.isValid()){
-            throw new IllegalArgumentException("label name must be filled out and a valid email must be provided");
+            throw new IllegalArgumentException("labelID name must be filled out and a valid email must be provided");
         }
         return service.createLabel(userLabel, request);
     }
@@ -58,7 +58,7 @@ public class LabelController {
     ///////////////////////
     /// PATCH MAPPING/S ///
     ///////////////////////
-    @Operation(summary = "updates a label",description = "allows users to update any of the labels associated with the, as long as a different label name from the name stored is provided")
+    @Operation(summary = "updates a labelID",description = "allows users to update any of the labels associated with the, as long as a different labelID name from the name stored is provided")
     @PatchMapping("/updateLabel")
     public ApiResponseDTO<String> updateLabel(@RequestBody UpdateLabelDTO reqLabel, HttpServletRequest request){
         if(!reqLabel.isValid()){
@@ -72,7 +72,7 @@ public class LabelController {
     /// DELETE MAPPING/S ///
     ////////////////////////
 
-    @Operation(summary = "deletes a label", description = "Allows users to delete any of their labels as long as they exists in the db")
+    @Operation(summary = "deletes a labelID", description = "Allows users to delete any of their labels as long as they exists in the db")
     @DeleteMapping("/deleteLabel")
     public ApiResponseDTO<String> deleteLabel(@RequestBody DeleteLabelDTO label, HttpServletRequest request){
         if(!label.isValid()){

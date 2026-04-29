@@ -1,6 +1,7 @@
 package com.example.notesAPI.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor//jackson's laters version prioritizes all args over no args.
 public class Note {
     ///////////////////////
     /// CLASS VARIABLES ///
@@ -25,7 +27,7 @@ public class Note {
     private UserTable user;
 
     @ManyToOne
-    @JoinColumn(name = "label_id")//name of fk in note that refers to the label table
+    @JoinColumn(name = "label_id")//name of fk in note that refers to the labelID table
     private Label label;
 
     @ManyToOne

@@ -18,7 +18,7 @@
 //    private int id;
 //    private String title;
 //    private String content;
-//    private String label;
+//    private String labelID;
 //    private LocalDateTime updatedAt;
 //
 //    ///////////////////
@@ -35,7 +35,7 @@
 //                note.getId(),
 //                note.getTitle(),
 //                note.getContent(),
-//                note.getLabel(),
+//                note.getLabelID(),
 //                note.getUpdatedAt()
 //        );
 //        return dto;

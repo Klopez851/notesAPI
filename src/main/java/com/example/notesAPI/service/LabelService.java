@@ -46,15 +46,15 @@ public class LabelService {
 
             // get user
             if (!user.isPresent()) {
-                throw new IllegalArgumentException("Valid email needed to create label");
+                throw new IllegalArgumentException("Valid email needed to create labelID");
             } else {
                 label = new Label(user.get(), labelName);
             }
 
-            //store label
+            //store labelID
             labelRepo.save(label);
 
-            return new ApiResponseDTO<>(true, "label successfully created", label.toString());
+            return new ApiResponseDTO<>(true, "labelID successfully created", label.toString());
         }
         throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
@@ -95,23 +95,23 @@ public class LabelService {
         String email = reqLabel.getEmail().strip().toLowerCase();
 
         if(isRequestValid(email, request)) {
-            //get label from db
+            //get labelID from db
             Optional<Label> label = labelRepo.findById(reqLabelID);
 
-            //make sure label exists the same
+            //make sure labelID exists the same
             if (!label.isPresent()) {
-                throw new IdNotFoundException("A label with that ID doesnt exist");
+                throw new IdNotFoundException("A labelID with that ID doesnt exist");
             }
 
             //make sure the labels are the same
             if (Objects.equals(label.get().getLabelName(), reqLabelName)) {
                 return new ApiResponseDTO<String>(true,
-                        "The label name in your request matches the existing name in the database.", null);
+                        "The labelID name in your request matches the existing name in the database.", null);
             }
-            //update label
+            //update labelID
             label.get().setLabelName(reqLabelName);
 
-            //save label
+            //save labelID
             labelRepo.save(label.get());
 
             return new ApiResponseDTO<String>(true, "Label successfully updated",
@@ -130,21 +130,21 @@ public class LabelService {
         int labelID = Integer.parseInt(reqlabel.getLabelID().strip());
 
         if(isRequestValid(email, request)) {
-            //ensure label and user exists
+            //ensure labelID and user exists
             Optional<Label> label = labelRepo.findById(labelID);
             Optional<UserTable> user = userRepo.findByEmail(email);
 
-            //delete user if label exists, if user exists, and is label is associated with the user
+            //delete user if labelID exists, if user exists, and is labelID is associated with the user
             if(label.isPresent()){
                 if(user.isPresent()){
                     if(label.get().getUser().getUserID() == user.get().getUserID()){
-                        //delete label
+                        //delete labelID
                         labelRepo.delete(label.get());
-                        return new ApiResponseDTO<String>(true, "label successfully deleted", null);
+                        return new ApiResponseDTO<String>(true, "labelID successfully deleted", null);
 
-                    }else{throw new ResourceNotFoundException("Could not find label associated with that user");}
+                    }else{throw new ResourceNotFoundException("Could not find labelID associated with that user");}
                 }else{throw new ResourceNotFoundException("A user with that email could not be found");}
-            }else{throw new IdNotFoundException("A label with that id could not be found");}
+            }else{throw new IdNotFoundException("A labelID with that id could not be found");}
         }
         throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }

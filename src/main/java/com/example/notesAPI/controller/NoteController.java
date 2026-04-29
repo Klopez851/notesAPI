@@ -1,25 +1,29 @@
 package com.example.notesAPI.controller;
 
-//import com.example.notesAPI.dto.createNoteDTO;
-//import com.example.notesAPI.dto.updateNoteDTO;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.Note.CreateNoteDTO;
 import com.example.notesAPI.service.NoteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Tag(name = "Note Endpoints")
 @AllArgsConstructor
 @RequestMapping("/note")
 public class NoteController {
+
     private final NoteService service;
 
+    @Operation(summary = "creates a note", description = "creates a note and associated it with the given email ")
     @PostMapping("/createNote")
-    public ApiResponseDTO<String> createNote(@RequestBody CreateNoteDTO note ){
+    public ApiResponseDTO<String> createNote(@RequestBody CreateNoteDTO note, HttpServletRequest request) {
         if(!note.isValid()){
-            throw new IllegalArgumentException("Note must have a title or text content");
+            throw new IllegalArgumentException("Note must have a title or text content and a valid email");
         }
-        return service.createNote(note);
+        return service.createNote(note, request);
     }
 
 
@@ -32,7 +36,7 @@ public class NoteController {
 //    @PutMapping("/{id}")
 //    public apiResponseDTO updateNote(@PathVariable int id, @RequestBody updateNoteDTO dto){
 //        return service.updateNote(id, Optional.ofNullable(dto.getContent()), Optional.ofNullable(dto.getTitle()),
-//                Optional.ofNullable(dto.getLabel()));
+//                Optional.ofNullable(dto.getLabelID()));
 //    }
 //
 //    @DeleteMapping("/{id}")

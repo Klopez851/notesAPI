@@ -2,6 +2,9 @@ package com.example.notesAPI.service;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.Note.CreateNoteDTO;
+import com.example.notesAPI.errorHandler.DatabaseErrorException;
+import com.example.notesAPI.errorHandler.ForbiddenRequestException;
+import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.model.Label;
 import com.example.notesAPI.model.Note;
 import com.example.notesAPI.model.NoteColor;
@@ -10,6 +13,7 @@ import com.example.notesAPI.repository.LabelRepository;
 import com.example.notesAPI.repository.NoteColorRepository;
 import com.example.notesAPI.repository.NotesRepository;
 import com.example.notesAPI.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -22,52 +26,77 @@ public class NoteService {
     private final NoteColorRepository noteColorRepo;
     private final UserRepository userRepo;
     private final LabelRepository labelRepo;
+    private final JWTService jwtService;
 
-    //change param type to createNoteDTO
-    public ApiResponseDTO<String> createNote(CreateNoteDTO noteDTO){
-        Label label = null;
-        NoteColor color = null;
+    ////////////////////
+    /// POST METHODS ///
+    ////////////////////
 
-        //clean data
-        String userEmail = noteDTO.getEmail().toLowerCase();
-        String noteTitle = noteDTO.hasTitle() ? noteDTO.getTitle().strip() : "";
-        String noteContent = noteDTO.hasContent() ? noteDTO.getContent().strip() : "";
-        String noteLabel = noteDTO.hasLabel() ? noteDTO.getLabel(): "";
-        String noteColor = noteDTO.hasColor() ? noteDTO.getNoteColor() : "";
+    public ApiResponseDTO<String> createNote(CreateNoteDTO noteDTO, HttpServletRequest request){
+        //clean the data
+        String email = noteDTO.getEmail().strip().toLowerCase();
+        String title = noteDTO.getTitle().orElse(null).strip();
+        String content = noteDTO.getContent().orElse(null).strip();;
 
-        //get user
-        Optional<UserTable> user = userRepo.findByEmail(userEmail);
+        // validate the request
+        if(isRequestValid(email, request)){
+            Optional<Label> label = null;
+            Optional<NoteColor> color = null;
 
-        //get label
-        if(!(noteLabel.isBlank())){
-            label = labelRepo.findByLabelNameAndUser(noteLabel, user.get().getUserID());
-
-            //if label does exist, create it then fetch it
-            if(label == null){
-                labelRepo.save(new Label(user.get(), noteLabel));
-                label = labelRepo.findByLabelNameAndUser(noteLabel, user.get().getUserID());
+            //look up user
+            Optional<UserTable> user = userRepo.findByEmail(email);
+            if(user.isEmpty()){
+                throw new ResourceNotFoundException("A user associated with that email could not be found");
             }
-        }
-        //get color
-        if(!(noteColor.isBlank())){
-            color = noteColorRepo.findByColorHEXAndUser(noteColor, user.get().getUserID());
 
-            //if color doesnt exist, create it and the fetch it
-            if(color == null){
-                noteColorRepo.save(new NoteColor(noteColor, user.get()));
-                color = noteColorRepo.findByColorHEXAndUser(noteColor, user.get().getUserID());
+            //look up label if not null
+            if(noteDTO.getLabelID().isPresent()){
+                label = labelRepo.findById(noteDTO.getLabelID().get());
             }
-        }
 
-        //create note
-        Note note = new Note(user.get(),noteTitle,noteContent,label, color);
+            //look up color if not null
+            if(noteDTO.getNoteColorID().isPresent()){
+                color = noteColorRepo.findById(noteDTO.getNoteColorID().get());
+            }
 
-        //save the note
-        noteRepo.save(note);
+            //create note
+            Note note = new Note(user.get(),title,content,label.get() ,color.get());
 
-        return new ApiResponseDTO<>(true, "Note successfully created", note.toString());
+            //give value to remaining note attributes
+            note.setPinned(false);
+            note.setHidden(false);
+            note.setViewOnly(false);
+            note.setDeleted(false);
+            note.setCosmetics("<insert cosmetics here");
+            note.setTimeLeftBeforeDeletion(null);
+
+            //save note
+            try {
+                noteRepo.save(note);
+            } catch (Exception e) {
+                throw new DatabaseErrorException(e.getMessage());
+            }
+
+            return new ApiResponseDTO<String>(true, "note successfully created", note.toString());
+
+        }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
+    ///////////////////
+    /// GET METHODS ///
+    ///////////////////
+
+    ///////////////////
+    /// PUT METHODS ///
+    ///////////////////
+
+    /////////////////////
+    /// PATCH METHODS ///
+    /////////////////////
+
+    //////////////////////
+    /// DELETE METHODS ///
+    //////////////////////
 
 //    // need to figure out how to look for strings, if via id, or if via title, or via text content, so the front end
 //    public apiResponseDTO<noteResponseDTO> getNote(int id){
@@ -89,7 +118,7 @@ public class NoteService {
 //    }
 //
 //    public apiResponseDTO<updateNoteDTO> updateNote(int id,Optional<String> content, Optional<String> title,
-//                                                    Optional<String> label){
+//                                                    Optional<String> labelID){
 //        //get old note values
 //        Optional<Note> tempNote = repo.findById(id);
 //        if(tempNote.isPresent()) {
@@ -102,8 +131,8 @@ public class NoteService {
 //            if (content.isPresent()) {
 //                note.setContent(content.get());
 //            }
-//            if (label.isPresent()) {
-//                note.setLabel(label.get());
+//            if (labelID.isPresent()) {
+//                note.setLabelID(labelID.get());
 //            }
 //
 //            //save time of update
@@ -144,6 +173,30 @@ public class NoteService {
 //            );
 //        }
 //    }
+    ///////////////////////
+    /// PRIVATE METHODS ///
+    ///////////////////////
 
+    private boolean isRequestValid(String userEmail, HttpServletRequest request){
+    String token;
+    String JWTemail = null;
+
+    //get auth header from request
+    String authHeader = request.getHeader("Authorization");
+
+    //ensure header isn't empty or wrongly formatted
+    if(authHeader != null && authHeader.startsWith("Bearer ")){
+        //extract token and get email from token
+        token = authHeader.substring(7);//jwt string starts at 7th index of header string
+        JWTemail = jwtService.extractEmail(token);
+    }
+
+    //ensure emails match
+    if (userEmail.equals(JWTemail)){
+        return true;
+    }
+
+    return false;
+}
 
 }
