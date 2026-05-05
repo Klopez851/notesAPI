@@ -106,13 +106,15 @@ public class NoteController {
         }
         return service.updateDeleted(noteDTO, request);
     }
-//
-//    @Operation(summary = "updates a notes <> status")
-//    @PatchMapping("/update<>")
-//    public ApiResponseDTO<String> update<>(@RequestBody Update DTO, HttpServletRequest request){
-//
-//    }
-//    //viewonly
+
+    @Operation(summary = "updates a notes view only status")
+    @PatchMapping("/updateViewOnly")
+    public ApiResponseDTO<String> updateViewOnlyStatus (@RequestBody UpdateBooleanStatusDTO noteDTO, HttpServletRequest request){
+        if(!noteDTO.isValid()){
+            throw new IllegalArgumentException("All fields (email, noteID, newValue) must be filled out");
+        }
+        return service.updateViewOnly(noteDTO, request);
+    }
 //
 //    @Operation(summary = "updates a notes <> status")
 //    @PatchMapping("/update<>")

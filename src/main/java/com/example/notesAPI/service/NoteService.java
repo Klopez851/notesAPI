@@ -312,6 +312,34 @@ public class NoteService {
         }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
+    public ApiResponseDTO<String> updateViewOnly(UpdateBooleanStatusDTO noteDTO, HttpServletRequest request) {
+        //clean data
+        String email = noteDTO.getEmail().strip().toLowerCase();
+
+        //validate request
+        if(isRequestValid(email, request)){
+            Optional<Note> note = noteRepo.findById(noteDTO.getNoteID());
+            Optional<UserTable> user = userRepo.findByEmail(email);
+
+            if(note.isPresent()){
+                if(user.isPresent()){
+                    if(user.get().getUserID() == note.get().getUser().getUserID()){
+                        //update hidden status
+                        note.get().setViewOnly(noteDTO.isNewValue());
+
+                        //update updatedAt field
+                        note.get().setUpdatedAt(LocalDateTime.now());
+
+                        //save entity
+                        noteRepo.save(note.get());
+
+                        return new ApiResponseDTO<String>(true, "Note sucessfully updated", null);
+
+                    }else{throw new ResourceNotFoundException("A note with that id associated with the provided user could not be found");}
+                }else{throw new ResourceNotFoundException("A user associated with that email could not be found");}
+            }else{throw new ResourceNotFoundException("A note assicated with that id could not be found");}
+        }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
+    }
 
     //////////////////////
     /// DELETE METHODS ///
