@@ -3,9 +3,7 @@ package com.example.notesAPI.controller;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.dto.Label.UpdateBooleanStatusDTO;
-import com.example.notesAPI.dto.Note.CreateNoteDTO;
-import com.example.notesAPI.dto.Note.GetNoteDTO;
-import com.example.notesAPI.dto.Note.NoteDTO;
+import com.example.notesAPI.dto.Note.*;
 import com.example.notesAPI.service.NoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -115,28 +113,38 @@ public class NoteController {
         }
         return service.updateViewOnly(noteDTO, request);
     }
-//
-//    @Operation(summary = "updates a notes <> status")
-//    @PatchMapping("/update<>")
-//    public ApiResponseDTO<String> update<>(@RequestBody Update DTO, HttpServletRequest request){
-//
-//    }
-//    //label
-//
-//    @Operation(summary = "updates a notes <> status")
-//    @PatchMapping("/update<>")
-//    public ApiResponseDTO<String> update<>(@RequestBody Update DTO, HttpServletRequest request){
-//
-//    }
-//    //color
-//
-//    @Operation(summary = "updates a notes <> status")
-//    @PatchMapping("/update<>")
-//    public ApiResponseDTO<String> update<>(@RequestBody Update DTO, HttpServletRequest request){
-//
-//    }
-//    //cosmetics
-//
+
+    @Operation(summary = "updates a note's label")
+    @PatchMapping("/updateLabel")
+    public ApiResponseDTO<String> updateLabel (@RequestBody UpdateNoteLabelDTO labelDTO, HttpServletRequest request){
+        if(!labelDTO.isValid()){
+            throw new IllegalArgumentException("All fields (email, noteID, labelID) must be filled out");
+        }
+        return service.updateLabel(labelDTO, request);
+    }
+
+    @Operation(summary = "updates a note's color")
+    @PatchMapping("/updateNoteColor")
+    public ApiResponseDTO<String> updateNoteColor (@RequestBody UpdateColorDTO colorDTO, HttpServletRequest request){
+        if(!colorDTO.isValid()){
+            throw new IllegalArgumentException("All fields (email, noteID, colorID) must be filled out");
+        }
+        return service.updateNoteColor(colorDTO, request);
+    }
+
+    @Operation(summary = "updates a note's cosmetics")
+    @PatchMapping("/updateCosmetics")
+    public ApiResponseDTO<String> updateCosmetics(@RequestBody UpdateCosmeticDTO cosmeticsDTO, HttpServletRequest request){
+        if(!cosmeticsDTO.isValid()){
+            throw new IllegalArgumentException("All fields (email, noteID, cosmetics) must be filled out");
+        }
+
+        return service.updateCosmetics(cosmeticsDTO, request);
+    }
+
+    /////////////////////////
+    /// DELETE MAPPING/S ////
+    /////////////////////////
 
 }
 

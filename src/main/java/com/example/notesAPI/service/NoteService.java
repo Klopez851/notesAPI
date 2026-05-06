@@ -3,9 +3,7 @@ package com.example.notesAPI.service;
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.dto.Label.UpdateBooleanStatusDTO;
-import com.example.notesAPI.dto.Note.CreateNoteDTO;
-import com.example.notesAPI.dto.Note.GetNoteDTO;
-import com.example.notesAPI.dto.Note.NoteDTO;
+import com.example.notesAPI.dto.Note.*;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
 import com.example.notesAPI.errorHandler.ForbiddenRequestException;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
@@ -250,7 +248,7 @@ public class NoteService {
 
                     }else{throw new ResourceNotFoundException("A note with that id associated with the provided user could not be found");}
                 }else{throw new ResourceNotFoundException("A user associated with that email could not be found");}
-            }else{throw new ResourceNotFoundException("A note assicated with that id could not be found");}
+            }else{throw new ResourceNotFoundException("A note associated with that id could not be found");}
         }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
@@ -279,7 +277,7 @@ public class NoteService {
 
                     }else{throw new ResourceNotFoundException("A note with that id associated with the provided user could not be found");}
                 }else{throw new ResourceNotFoundException("A user associated with that email could not be found");}
-            }else{throw new ResourceNotFoundException("A note assicated with that id could not be found");}
+            }else{throw new ResourceNotFoundException("A note associated with that id could not be found");}
         }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
@@ -295,7 +293,7 @@ public class NoteService {
             if(note.isPresent()){
                 if(user.isPresent()){
                     if(user.get().getUserID() == note.get().getUser().getUserID()){
-                        //update hidden status
+                        //update deleted status
                         note.get().setDeleted(noteDTO.isNewValue());
 
                         //update updatedAt field
@@ -308,7 +306,7 @@ public class NoteService {
 
                     }else{throw new ResourceNotFoundException("A note with that id associated with the provided user could not be found");}
                 }else{throw new ResourceNotFoundException("A user associated with that email could not be found");}
-            }else{throw new ResourceNotFoundException("A note assicated with that id could not be found");}
+            }else{throw new ResourceNotFoundException("A note associated with that id could not be found");}
         }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
@@ -324,7 +322,7 @@ public class NoteService {
             if(note.isPresent()){
                 if(user.isPresent()){
                     if(user.get().getUserID() == note.get().getUser().getUserID()){
-                        //update hidden status
+                        //update viewonly status
                         note.get().setViewOnly(noteDTO.isNewValue());
 
                         //update updatedAt field
@@ -337,7 +335,102 @@ public class NoteService {
 
                     }else{throw new ResourceNotFoundException("A note with that id associated with the provided user could not be found");}
                 }else{throw new ResourceNotFoundException("A user associated with that email could not be found");}
-            }else{throw new ResourceNotFoundException("A note assicated with that id could not be found");}
+            }else{throw new ResourceNotFoundException("A note associated with that id could not be found");}
+        }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
+    }
+
+    public ApiResponseDTO<String> updateCosmetics(UpdateCosmeticDTO cosmeticsDTO, HttpServletRequest request) {
+        //clean data
+        String email = cosmeticsDTO.getEmail().strip().toLowerCase();
+
+        //validate request
+        if(isRequestValid(email, request)){
+            Optional<Note> note = noteRepo.findById(cosmeticsDTO.getNoteID());
+            Optional<UserTable> user = userRepo.findByEmail(email);
+
+            if(note.isPresent()){
+                if(user.isPresent()){
+                    if(user.get().getUserID() == note.get().getUser().getUserID()){
+                        //update cosmetics
+                        note.get().setCosmetics(cosmeticsDTO.getCosmetics());
+
+                        //update updatedAt field
+                        note.get().setUpdatedAt(LocalDateTime.now());
+
+                        //save entity
+                        noteRepo.save(note.get());
+
+                        return new ApiResponseDTO<String>(true, "Note sucessfully updated", null);
+
+                    }else{throw new ResourceNotFoundException("A note with that id associated with the provided user could not be found");}
+                }else{throw new ResourceNotFoundException("A user associated with that email could not be found");}
+            }else{throw new ResourceNotFoundException("A note associated with that id could not be found");}
+        }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
+    }
+
+    public ApiResponseDTO<String> updateLabel(UpdateNoteLabelDTO labelDTO, HttpServletRequest request) {
+        //clean data
+        String email = labelDTO.getEmail().strip().toLowerCase();
+
+        //validate request
+        if(isRequestValid(email, request)){
+            Optional<Note> note = noteRepo.findById(labelDTO.getNoteID());
+            Optional<UserTable> user = userRepo.findByEmail(email);
+            Optional<Label> label = labelRepo.findById(labelDTO.getLabelID());
+
+            //ensure all parts needed for the update exists
+            if(label.isPresent()) {
+                if (note.isPresent()) {
+                    if (user.isPresent()) {
+                        if (user.get().getUserID() == note.get().getUser().getUserID()) {
+                            //update label
+                            note.get().setLabel(label.get());
+
+                            //update updatedAt field
+                            note.get().setUpdatedAt(LocalDateTime.now());
+
+                            //save entity
+                            noteRepo.save(note.get());
+
+                            return new ApiResponseDTO<String>(true, "Note sucessfully updated", null);
+
+                        } else {throw new ResourceNotFoundException("A note with that id associated with the provided user could not be found");}
+                    } else {throw new ResourceNotFoundException("A user associated with that email could not be found");}
+                } else {throw new ResourceNotFoundException("A note associated with that id could not be found");}
+            }else {throw new ResourceNotFoundException("A label associated with that id could not be found");}
+        }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
+    }
+
+    public ApiResponseDTO<String> updateNoteColor(UpdateColorDTO colorDTO, HttpServletRequest request) {
+        //clean data
+        String email = colorDTO.getEmail().strip().toLowerCase();
+
+        //validate request
+        if(isRequestValid(email, request)){
+            Optional<Note> note = noteRepo.findById(colorDTO.getNoteID());
+            Optional<UserTable> user = userRepo.findByEmail(email);
+            Optional<NoteColor> color = noteColorRepo.findById(colorDTO.getColorID());
+
+            //ensure all parts needed for the update exists
+            if(color.isPresent()) {
+                if (note.isPresent()) {
+                    if (user.isPresent()) {
+                        if (user.get().getUserID() == note.get().getUser().getUserID()) {
+                            //update noteColor
+                            note.get().setColor(color.get());
+
+                            //update updatedAt field
+                            note.get().setUpdatedAt(LocalDateTime.now());
+
+                            //save entity
+                            noteRepo.save(note.get());
+
+                            return new ApiResponseDTO<String>(true, "Note sucessfully updated", null);
+
+                        } else {throw new ResourceNotFoundException("A note with that id associated with the provided user could not be found");}
+                    } else {throw new ResourceNotFoundException("A user associated with that email could not be found");}
+                } else {throw new ResourceNotFoundException("A note associated with that id could not be found");}
+            }else {throw new ResourceNotFoundException("A NoteColor associated with that id could not be found");}
         }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
     }
 
@@ -371,4 +464,5 @@ public class NoteService {
 
         return false;
     }
+
 }
