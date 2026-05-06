@@ -95,7 +95,6 @@ public class NoteController {
         return service.updateHidden(noteDTO, request);
     }
 
-
     @Operation(summary = "updates a notes deleted status")
     @PatchMapping("/updateDeleted")
     public ApiResponseDTO<String> updateDeletedStatus (@RequestBody UpdateBooleanStatusDTO noteDTO, HttpServletRequest request){
@@ -145,6 +144,15 @@ public class NoteController {
     /////////////////////////
     /// DELETE MAPPING/S ////
     /////////////////////////
+
+    @Operation(summary = "deletes a note")
+    @DeleteMapping("/deleteNote")
+    public ApiResponseDTO<String> deleteNote(@RequestBody DeleteNoteDTO noteDTO, HttpServletRequest request){
+        if(!noteDTO.isValid()){
+            throw new IllegalArgumentException("All fields (email, noteID) must be filled out");
+        }
+        return service.deleteNote(noteDTO, request);
+    }
 
 }
 

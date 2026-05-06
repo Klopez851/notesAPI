@@ -17,6 +17,7 @@ import com.example.notesAPI.repository.NotesRepository;
 import com.example.notesAPI.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -437,6 +438,28 @@ public class NoteService {
     //////////////////////
     /// DELETE METHODS ///
     //////////////////////
+
+    public ApiResponseDTO<String> deleteNote(DeleteNoteDTO noteDTO, HttpServletRequest request) {
+        //clean data
+        String email = noteDTO.getEmail().strip().toLowerCase();
+
+        if(isRequestValid(email, request)){
+            //ensure note exists and is associated with the given user
+            Optional<Note> note = noteRepo.findById(noteDTO.getNoteID());
+            Optional<UserTable> user = userRepo.findByEmail(email);
+
+            if(note.isPresent()){
+                if(user.isPresent()){
+                    if(user.get().getUserID() == note.get().getUser().getUserID()){
+                        //delete note
+                        noteRepo.delete(note.get());
+                        return new ApiResponseDTO<String>(true, "Note sucessfully deleted", null);
+
+                    }else {throw new ResourceNotFoundException("A note with that id associated with that user could not be found");}
+                }else {throw new ResourceNotFoundException("A user associated with that id could not be found");}
+            }else {throw new ResourceNotFoundException("A note associated with that id could not be found");}
+        }throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
+    }
 
     /// ////////////////////
     /// PRIVATE METHODS ///
