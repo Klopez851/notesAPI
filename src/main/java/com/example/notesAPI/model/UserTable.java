@@ -1,6 +1,7 @@
 package com.example.notesAPI.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +25,7 @@ public class UserTable {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UITemplate> uiTemplate;
-              //refers to the field name in the child entity (Java class)
+    //refers to the field name in the child entity (Java class)
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<NoteColor> noteColor;
 
@@ -38,16 +40,16 @@ public class UserTable {
     private LocalDateTime createdAt;
 
 
-    public String toString(){
-        return (userID +" "+ username+" "+email+" "+ userPassword +" "+createdAt+".");
+    public String toString() {
+        return (userID + " " + username + " " + email + " " + userPassword + " " + createdAt + ".");
     }
 
-    public boolean equals(UserTable user){
+    public boolean equals(UserTable user) {
 
-        if(this.userID == user.getUserID()
+        if (this.userID == user.getUserID()
                 && this.username == user.getUsername()
                 && this.email == user.getEmail()
-                && this.userPassword.equals(user.getUserPassword())){
+                && this.userPassword.equals(user.getUserPassword())) {
             return true;
         }
         return false;

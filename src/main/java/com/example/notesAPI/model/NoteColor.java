@@ -1,6 +1,7 @@
 package com.example.notesAPI.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "notecolor")
 public class NoteColor {
     @Id
@@ -23,15 +25,15 @@ public class NoteColor {
     @Column(name = "color_hex")
     private String colorHEX;
 
-    public NoteColor(String colorHEX, UserTable user){
+    public NoteColor(String colorHEX, UserTable user) {
         this.user = user;
         this.colorHEX = colorHEX;
     }
 
-    public boolean equals(NoteColor color){
-        if(this.colorID == color.getColorID()
+    public boolean equals(NoteColor color) {
+        if (this.colorID == color.getColorID()
                 && this.colorHEX.equalsIgnoreCase(color.getColorHEX())
-                && this.user.equals(color.getUser())){
+                && this.user.equals(color.getUser())) {
             return true;
         }
         return false;

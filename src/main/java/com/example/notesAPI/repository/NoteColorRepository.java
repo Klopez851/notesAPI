@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface NoteColorRepository extends JpaRepository<NoteColor, Integer> {
 
-    NoteColor findByColorHEXAndUser(String colorHex, int userID);
-
     boolean existsByColorHEX(String colorHex);
 
     @Query("SELECT new com.example.notesAPI.dto.noteColor.NoteColorDTO(n.colorHEX, n.colorID) " +

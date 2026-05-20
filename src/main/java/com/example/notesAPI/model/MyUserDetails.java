@@ -3,7 +3,6 @@ package com.example.notesAPI.model;
 import lombok.AllArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -30,7 +29,9 @@ public class MyUserDetails implements UserDetails {
         return user.getUsername();
     }
 
-    public String getEmail(){return user.getEmail();}
+    public String getEmail() {
+        return user.getEmail();
+    }
 
     @Override
     public boolean isAccountNonExpired() {

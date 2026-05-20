@@ -28,7 +28,7 @@ public class AuthenticationConfig {
     private final JWTFilter jwtFilter;
 
     @Bean //the same instance of an object will be used throughout the whole application
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{//HttpSecurity implements SecurityFilterChain, therefore returning a SecurityFilterChain object
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {//HttpSecurity implements SecurityFilterChain, therefore returning a SecurityFilterChain object
         return http.csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/user/createUser",
@@ -56,12 +56,12 @@ public class AuthenticationConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config){
-       return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
+        return config.getAuthenticationManager();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
         return provider;

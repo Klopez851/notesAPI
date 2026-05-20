@@ -26,27 +26,31 @@ public class JWTFilter extends OncePerRequestFilter {
     private ApplicationContext context;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
         String token = null;
-        String email= null;
+        String email = null;
 
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);//jwt string starts at 7th index of header string
             email = jwtService.extractEmail(token);
         }
 
-                            // returns the auth state of the current request, needed bc some other filter might auth the user (in the future), dont wanna auth twice
-        if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            //bc authConfig needs an instance of JWTFilter in order to be inititalized, but jwt needs a bean in authConfig to be initialized, it creates a circular redundancy if i try to call the UserDetails bean here
+        // returns the auth state of the current request, needed bc some other filter might auth the user
+        // (in the future), don't want to auth twice
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            //bc authConfig needs an instance of JWTFilter in order to be inititalized, but jwt needs a bean in
+            // authConfig to be initialized, it creates a circular redundancy if i try to call the UserDetails bean here
             MyUserDetails userDetails = (MyUserDetails) context.getBean(MyUserDetailsService.class).loadUserByUsername(email);//load by usernae=me is a misnomer, it loads the user by their email
 
-            if(jwtService.validateToken(token, userDetails)){
+            if (jwtService.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                // Attaches additional request details (e.g., IP address, session ID) to the authentication token for debugging/logging/auditing
+                // Attaches additional request details (e.g., IP address, session ID) to the authentication token for
+                // debugging/logging/auditing
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 //set user as authenticated if nothing fails
@@ -54,6 +58,6 @@ public class JWTFilter extends OncePerRequestFilter {
             }
         }
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }

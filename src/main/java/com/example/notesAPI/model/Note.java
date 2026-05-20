@@ -14,20 +14,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor//jackson's latests version prioritizes all args over no args.
 public class Note {
-    ///////////////////////
+    /// ////////////////////
     /// CLASS VARIABLES ///
-    ///////////////////////
+    /// ////////////////////
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "note_id")
-    private int noteID; //making this an int (not a long) since its not a big app, its for personal use
+    private int noteID; //making this an int (not a long) since its not a big webapp, its for personal use
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserTable user;
 
     @ManyToOne
-    @JoinColumn(name = "label_id")//name of fk in note that refers to the label table
+    @JoinColumn(name = "label_id")//name of fk in note table that refers to the label table
     private Label label;
 
     @ManyToOne
@@ -45,19 +45,19 @@ public class Note {
     private boolean deleted;
     private LocalDateTime timeLeftBeforeDeletion;
 
-    ///////////////////
+    /// ////////////////
     /// CONSTRUCTOR ///
-    ///////////////////
+    /// ////////////////
 
-    public Note(UserTable user,String title,String textContent,Label label, NoteColor noteColor){
+    public Note(UserTable user, String title, String textContent, Label label, NoteColor noteColor) {
         this.title = title;
         this.textContent = textContent;
-        this.label=label;
-        this.user=user;
+        this.label = label;
+        this.user = user;
         this.color = noteColor;
     }
 
-    public String toString(){
-        return (noteID+" "+user.getEmail()+" "+title+" "+textContent);
+    public String toString() {
+        return (noteID + " " + user.getEmail() + " " + title + " " + textContent);
     }
 }
