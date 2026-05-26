@@ -45,7 +45,7 @@ public class UserController {
     /// GET MAPPINGS ///
     /// /////////////////
 
-    @Operation(summary = "fetches user information", description = "fetches user information given that a valid email is provided")
+    @Operation(summary = "fetches user information", description = "fetches user information using a valid jwt token")
     @GetMapping("/getUser")
     public ApiResponseDTO<UserInfoDTO> getUser(HttpServletRequest request) {
         return service.getUser(request);
@@ -85,7 +85,7 @@ public class UserController {
     /// ///////////////////
     /// DELETE MAPPING ///
     /// ///////////////////
-    @Operation(summary = "Allows user to delete their account", description = "Allows user to delete their account and everything related to them")
+    @Operation(summary = "Allows user to delete their account", description = "Allows user to delete their account and everything related to them using their jwt token")
     @DeleteMapping("/deleteUser")
     public ApiResponseDTO<String> deleteUser(HttpServletRequest request) {
         return service.deleteUser(request);

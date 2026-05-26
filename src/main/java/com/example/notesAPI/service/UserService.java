@@ -1,10 +1,8 @@
 package com.example.notesAPI.service;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
-import com.example.notesAPI.dto.EmailDTO;
 import com.example.notesAPI.dto.User.*;
 import com.example.notesAPI.errorHandler.DatabaseErrorException;
-import com.example.notesAPI.errorHandler.ForbiddenRequestException;
 import com.example.notesAPI.errorHandler.ResourceAlreadyExistsException;
 import com.example.notesAPI.errorHandler.ResourceNotFoundException;
 import com.example.notesAPI.model.UserTable;
@@ -118,11 +116,11 @@ public class UserService {
 
     public ApiResponseDTO<String> updateUsername(UpdateUserInfoDTO userInfoDTO, HttpServletRequest request) {
         //clean the data
-        String username = userInfoDTO.getNewData().strip();
+        String newUsername = userInfoDTO.getNewData().strip();
         String userEmail = requestUtil.extractEmailClaim(request);
 
         //validate the input some more
-        if (username.length() > MAX_USERNAME_LENGTH) {
+        if (newUsername.length() > MAX_USERNAME_LENGTH) {
             throw new IllegalArgumentException("Username is too long");
         }
 
@@ -133,9 +131,14 @@ public class UserService {
         if (user.isEmpty()) {
             throw new ResourceNotFoundException(userEmail + " is not an existing user account. " +
                     "Username updates require a valid email to identify the user to update.");
-        } else {
-            user.get().setUsername(username);
         }
+
+        if(user.get().getUsername().equals(newUsername)){
+            throw new ResourceAlreadyExistsException("No changes made. The new username matches the current username.");
+        }else{
+            user.get().setUsername(newUsername);
+        }
+
         //save the user
         try {
             userRepo.save(user.get());
@@ -164,9 +167,14 @@ public class UserService {
         //update the user info
         if (user.isEmpty()) {
             throw new ResourceNotFoundException("Cannot find a user to update");
-        } else {
+        }
+
+        if(user.get().getEmail().equals(newEmail)){
+            throw new ResourceAlreadyExistsException("No changes made. The new email matches the current email.");
+        }else{
             user.get().setEmail(newEmail);
         }
+
         //save the user
         try {
             userRepo.save(user.get());
