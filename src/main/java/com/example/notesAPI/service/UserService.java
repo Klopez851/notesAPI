@@ -43,7 +43,7 @@ public class UserService {
                 authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getUserPassword()));
         //auth manager returns an Authentication object and takes type authentication token
         if(authenticate.isAuthenticated()){
-            return jwtService.generateToken(user.getEmail());
+            return "token: "+ jwtService.generateToken(user.getEmail());
         }
         else {
             throw new ResourceNotFoundException("User not found with the email "+ user.getEmail());
@@ -86,23 +86,22 @@ public class UserService {
             throw new DatabaseErrorException(e.getMessage());
         }
 
-        return new ApiResponseDTO<>(true,"user created successfully", user.toString());
+        return new ApiResponseDTO<>(true,"user created successfully", null);
     }
 
     ////////////////////
     /// GET METHODS ///
     ////////////////////
 
-    public ApiResponseDTO<UserInfoDTO> getUser(String userEmail) {
+    public ApiResponseDTO<UserInfoDTO> getUser(HttpServletRequest request) {
         //clean the data
-        String email = userEmail.strip().toLowerCase();
-
+        String email = extractEmailClaim(request).toLowerCase();
         UserInfoDTO userInfo;
 
         //get the user from the db
         Optional<UserTable> user = userRepo.findByEmail(email);
         //make sure the user exists
-        if(!user.isPresent()){
+        if(user.isEmpty()){
             throw new ResourceNotFoundException("User with the email "+email+" not found");
         }else{
             userInfo = new UserInfoDTO(user.get().getUsername(),user.get().getEmail(),null);
@@ -132,7 +131,7 @@ public class UserService {
             //update the user info
             if(!user.isPresent()){
                 throw new ResourceNotFoundException("The email address provided does not match any existing user account. " +
-                        "Username updates require a valid email to identify the user record to update.");
+                        "Username updates require a valid email to identify the user to update.");
             }else {
                 user.get().setUsername(username);
             }
@@ -143,7 +142,7 @@ public class UserService {
                 throw new DatabaseErrorException(e.getMessage());
             }
 
-            return new ApiResponseDTO<String>(true,"Username updated successfully",user.get().toString() );
+            return new ApiResponseDTO<String>(true,"Username updated successfully",null);
         }
 
         throw new ForbiddenRequestException("Access denied: You can only modify your own account.");
@@ -260,5 +259,22 @@ public class UserService {
         }
 
         return false;
+    }
+
+    private String extractEmailClaim(HttpServletRequest request){
+        String token;
+        String JWTemail = null;
+
+        //get auth header from request
+        String authHeader = request.getHeader("Authorization");
+
+        //ensure header isn't empty or wrongly formatted
+        if(authHeader != null && authHeader.startsWith("Bearer ")){
+            //extract token and get email from token
+            token = authHeader.substring(7);//jwt string starts at 7th index of header string
+            JWTemail = jwtService.extractEmail(token);
+        }
+
+        return JWTemail;
     }
 }

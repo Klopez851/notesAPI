@@ -47,11 +47,11 @@ public class UserController {
 
     @Operation(summary = "fetches user information", description = "fetches user information given that a valid email is provided")
     @GetMapping("/getUser")
-    public ApiResponseDTO<UserInfoDTO> getUser(@RequestBody EmailDTO user) {
-        if (!user.isValid()) {
-            throw new IllegalArgumentException("All fields must be filled out");
-        }
-        return service.getUser(user.getEmail());
+    public ApiResponseDTO<UserInfoDTO> getUser(HttpServletRequest request) {
+//        if (!user.isValid()) {
+//            throw new IllegalArgumentException("All fields must be filled out");
+//        }
+        return service.getUser(request);
     }
 
     /// ///////////////////
