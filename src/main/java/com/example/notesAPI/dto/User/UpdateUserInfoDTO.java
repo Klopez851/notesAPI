@@ -12,23 +12,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UpdateUserInfoDTO {
 
-    @Schema(name = "oldData",requiredMode = Schema.RequiredMode.REQUIRED)
-    private String oldData;
-
-    @Schema(name = "email", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String email;
-
     @Schema(name = "newData", requiredMode = Schema.RequiredMode.REQUIRED)
     private String newData;
 
     @JsonIgnore
     public boolean isValid(){
-        if((newData == null || newData.isBlank())
-                ||(oldData == null || oldData.isBlank())
-                ||(email == null || email.isBlank())){
-            return false;
-        }
-        if (newData.equals(oldData)){
+        if(newData == null || newData.isBlank()){
             return false;
         }
         return true;

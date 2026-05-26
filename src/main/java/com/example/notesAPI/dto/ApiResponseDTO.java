@@ -10,8 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 //T = type, a generic placeholder
 public class ApiResponseDTO<T> {
-    @Schema(name = "response",example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
-    private boolean response;
+    @Schema(name = "success",example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
+    private boolean success;
 
     @Schema(name = "message",example = "resource found", requiredMode = Schema.RequiredMode.REQUIRED)
     private String message;

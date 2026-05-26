@@ -32,7 +32,7 @@ public class UserController {
         return (service.createUser(user));
     }
 
-    @Operation(summary = "Allows user to login", description = "Allows user to log in and returns a custom JWT token")
+    @Operation(summary = "Allows user to login", description = "Allows user to log in and returns a custom JWT token with lowercase email")
     @PostMapping("/login")
     public String login(@RequestBody UserLoginDTO user) {
         if (!user.isValid()) {
@@ -48,9 +48,6 @@ public class UserController {
     @Operation(summary = "fetches user information", description = "fetches user information given that a valid email is provided")
     @GetMapping("/getUser")
     public ApiResponseDTO<UserInfoDTO> getUser(HttpServletRequest request) {
-//        if (!user.isValid()) {
-//            throw new IllegalArgumentException("All fields must be filled out");
-//        }
         return service.getUser(request);
     }
 
@@ -62,7 +59,7 @@ public class UserController {
     @PatchMapping("/updateEmail")
     public ApiResponseDTO<String> updateEmail(@RequestBody UpdateEmailDTO emailDTO, HttpServletRequest request) {
         if (!emailDTO.isValid()) {
-            throw new IllegalArgumentException("Must provide new and old email");
+            throw new IllegalArgumentException("Must provide new email");
         }
         return service.updateEmail(emailDTO, request);
     }
@@ -71,7 +68,7 @@ public class UserController {
     @PatchMapping("/updateUsername")
     public ApiResponseDTO<String> updateUsername(@RequestBody UpdateUserInfoDTO usernameDTO, HttpServletRequest request) {
         if (!usernameDTO.isValid()) {
-            throw new IllegalArgumentException("Must provide a new username"); //assuming front-end will provide correct user email in request
+            throw new IllegalArgumentException("Must provide a new username");
         }
         return service.updateUsername(usernameDTO, request);
     }
@@ -90,12 +87,8 @@ public class UserController {
     /// ///////////////////
     @Operation(summary = "Allows user to delete their account", description = "Allows user to delete their account and everything related to them")
     @DeleteMapping("/deleteUser")
-    public ApiResponseDTO<String> deleteUser(@RequestBody EmailDTO user, HttpServletRequest request) {
-        if (!user.isValid()) {
-            throw new ResourceNotFoundException("please provide a valid email");
-        }
-        return service.deleteUser(user, request);
-        //ensure user and jwt token info matches
+    public ApiResponseDTO<String> deleteUser(HttpServletRequest request) {
+        return service.deleteUser(request);
     }
 
 }
