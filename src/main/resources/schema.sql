@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS user_table (
 CREATE TABLE IF NOT EXISTS note (
   note_id INTEGER AUTO_INCREMENT PRIMARY KEY NOT NULL,
   user_id INTEGER NOT NULL,
-  title VARCHAR(255),
+  title VARCHAR(100),
   text_content TEXT,
   label_id INTEGER,
   color_id INTEGER,

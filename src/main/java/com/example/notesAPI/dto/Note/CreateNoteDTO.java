@@ -12,8 +12,6 @@ import java.util.Optional;
 @Setter
 @AllArgsConstructor
 public class CreateNoteDTO {
-    @Schema(name = "email",example = "sampleemail@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String email;
 
     @Schema(name = "title",example = "sample note title", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Optional<String> title;
@@ -29,40 +27,9 @@ public class CreateNoteDTO {
 
     @JsonIgnore
     public boolean isValid(){
-        //The condition evaluates to true if email is null or blank, or Both title and content are null or blank.
-        if((email == null || email.isBlank())
-                || (title.isEmpty() && content.isEmpty())){
+        if(title.isEmpty() && content.isEmpty()){
             return false;
         }
         return true;
     }
-
-//    public boolean hasTitle(){
-//        if(title == null || title.isBlank()){
-//            return false;
-//        }
-//        return true;
-//    }
-//
-//    public boolean hasContent(){
-//        if(content == null || content.isBlank()){
-//            return false;
-//        }
-//        return true;
-//    }
-
-    public boolean hasLabel(){
-        if(labelID.isEmpty()){
-            return false;
-        }
-        return true;
-    }
-
-    public boolean hasColor(){
-        if(noteColorID.isEmpty()){
-            return false;
-        }
-        return true;
-    }
-
 }

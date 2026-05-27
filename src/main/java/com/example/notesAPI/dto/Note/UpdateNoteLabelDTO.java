@@ -11,9 +11,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UpdateNoteLabelDTO {
-    @Schema(name = "email",example = "sampleemail@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String email;
-
     @Schema(name = "noteID",example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private int noteID;
 

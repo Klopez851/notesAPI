@@ -11,9 +11,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UpdateCosmeticDTO {
-    @Schema(name = "email",example = "sampleemail@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String email;
-
     @Schema(name = "noteID",example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private int noteID;
 
@@ -22,8 +19,7 @@ public class UpdateCosmeticDTO {
 
     @JsonIgnore
     public boolean isValid(){
-        if(email == null || email.isBlank()
-                || noteID<1
+        if(noteID<1
                 || cosmetics == null || cosmetics.isBlank()){
             return false;
         }

@@ -10,9 +10,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetNoteDTO {
-    @Schema(name = "email",example = "sampleemail@gmail.com", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String email;
-
     @Schema(name = "noteID",example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private int noteID;
 

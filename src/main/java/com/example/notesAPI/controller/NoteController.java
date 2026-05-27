@@ -2,7 +2,7 @@ package com.example.notesAPI.controller;
 
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.EmailDTO;
-import com.example.notesAPI.dto.Label.UpdateBooleanStatusDTO;
+import com.example.notesAPI.dto.Note.UpdateBooleanStatusDTO;
 import com.example.notesAPI.dto.Note.*;
 import com.example.notesAPI.service.NoteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,12 +25,12 @@ public class NoteController {
     /// POST MAPPING/S ///
     /// ///////////////////
 
-    @Operation(summary = "creates a note", description = "creates a note and associated it with the given email, " +
-            "if labelID/noteColorID = null/\" \" those fields will be saved as null ")
+    @Operation(summary = "creates a note", description = "creates a note and associated it with the email provided by the " +
+            "jwt token, \"not requires\" means no value needs to be passed, but field itself must be present in request")
     @PostMapping("/createNote")
     public ApiResponseDTO<String> createNote(@RequestBody CreateNoteDTO note, HttpServletRequest request) {
         if (!note.isValid()) {
-            throw new IllegalArgumentException("Note must have a title or text content and a valid email");
+            throw new IllegalArgumentException("Note must have a title or text content");
         }
         return service.createNote(note, request);
     }

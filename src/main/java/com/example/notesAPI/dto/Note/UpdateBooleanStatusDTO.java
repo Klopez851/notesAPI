@@ -1,4 +1,4 @@
-package com.example.notesAPI.dto.Label;
+package com.example.notesAPI.dto.Note;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,9 +10,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UpdateBooleanStatusDTO {
-    @Schema(name = "email",example = "sampleemail@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String email;
-
     @Schema(name = "noteID",example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private int noteID;
 
@@ -21,7 +18,7 @@ public class UpdateBooleanStatusDTO {
 
     @JsonIgnore
     public boolean isValid(){
-        if(email == null || email.isBlank() || noteID<0){
+        if(noteID<0){
             return false;
         }
         return true;

@@ -15,9 +15,6 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class UpdateNoteDTO {
-    @Schema(name = "email",example = "sampleemail@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String email;
-
     @Schema(name = "id",example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private int id;
 
