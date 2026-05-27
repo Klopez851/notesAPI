@@ -1,5 +1,4 @@
 package com.example.notesAPI.controller;
-
 import com.example.notesAPI.dto.ApiResponseDTO;
 import com.example.notesAPI.dto.Note.*;
 import com.example.notesAPI.service.NoteService;

@@ -18,7 +18,7 @@ public class UpdateNoteLabelDTO {
 
     @JsonIgnore
     public boolean isValid() {
-        if (email == null || email.isBlank() || noteID < 1 || labelID < 1) {
+        if (noteID < 1 || labelID < 1) {
             return false;
         }
 

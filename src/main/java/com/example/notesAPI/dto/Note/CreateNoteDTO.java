@@ -13,21 +13,21 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CreateNoteDTO {
 
-    @Schema(name = "title", example = "sample note title", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(name = "title",example = "sample note title", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Optional<String> title;
 
-    @Schema(name = "content", example = "<TBD>", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(name = "content",example = "<TBD>", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Optional<String> content;
 
-    @Schema(name = "labelID", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(name = "labelID",example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Optional<Integer> labelID;
 
-    @Schema(name = "noteColorID", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(name = "noteColorID",example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Optional<Integer> noteColorID;
 
     @JsonIgnore
-    public boolean isValid() {
-        if (title.isEmpty() && content.isEmpty()) {
+    public boolean isValid(){
+        if(title.isEmpty() && content.isEmpty()){
             return false;
         }
         return true;
