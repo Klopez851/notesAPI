@@ -13,7 +13,7 @@ public class UserLoginDTO {
     @Schema(name = "email", example = "sampleemail@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String email;
 
-    @Schema(name = "password", example = "UserPassword@123", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(name = "userPassword", example = "UserPassword@123", requiredMode = Schema.RequiredMode.REQUIRED)
     private String userPassword;
 
     @JsonIgnore

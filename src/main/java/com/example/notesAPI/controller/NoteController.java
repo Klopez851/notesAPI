@@ -23,7 +23,7 @@ public class NoteController {
     /// ///////////////////
 
     @Operation(summary = "creates a note", description = "creates a note and associated it with the email provided by the " +
-            "jwt token, \"not requires\" means no value needs to be passed, but field itself must be present in request")
+            "jwt token, \"not required\" means no value needs to be passed, but field itself must be present in request")
     @PostMapping("/createNote")
     public ApiResponseDTO<String> createNote(@RequestBody CreateNoteDTO note, HttpServletRequest request) {
         if (!note.isValid()) {

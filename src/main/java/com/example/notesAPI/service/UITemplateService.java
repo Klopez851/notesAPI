@@ -113,7 +113,7 @@ public class UITemplateService {
                     templateRepo.save(template.get());
 
                     return new ApiResponseDTO<String>(true,
-                            "template successfully updated", template.get().toString());
+                            "template successfully updated", null);
 
                 } else {
                     throw new ResourceNotFoundException("Could not find ui template associated with that user");

@@ -1,5 +1,6 @@
 package com.example.notesAPI.dto.UITemplate;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@JsonPropertyOrder({"templateID","templateName","templateDetails"})
 public class GetTemplateDTO {
     private String templateName, templateDetails;
     private int templateID;

@@ -27,6 +27,7 @@ import java.util.Optional;
 public class NoteService {
 
     /// CONSTANTS ///
+    //TODO: figure out a good content char size constant
     private final int MAX_TITLE_SIZE = 100;
     private final NotesRepository noteRepo;
     private final NoteColorRepository noteColorRepo;
@@ -165,44 +166,80 @@ public class NoteService {
         Optional<NoteColor> color = noteColorRepo.findById(noteDTO.getNoteColor().getColorID());
 
         //make sure note is associated with the user
+        StringBuilder warning = new StringBuilder();
         if (note.isPresent()) {
             if (user.isPresent()) {
                 if (user.get().getUserID() == note.get().getUser().getUserID()) {
                     //update whatever fields need to be updated
                     if (!note.get().getTitle().equals(noteDTO.getTitle())) {
                         note.get().setTitle(noteDTO.getTitle());
+                    }else{
+                        warning.append("Title was not updated because the provided title is identical to the current title.");
                     }
 
                     if (!note.get().getTextContent().equals(noteDTO.getTextContent())) {
                         note.get().setTextContent(noteDTO.getTextContent());
+                    }else{
+                        warning.append("\n");
+                        warning.append("Text content was not updated because the provided content is identical to the current content.");
                     }
 
-                    if (!note.get().getLabel().equals(label.get())) {
-                        note.get().setLabel(label.get());
+                    //if the label is present and the note doesnt have a label already associated with it, just add it,
+                    // else ensure they are the same before updating
+                    if(label.isPresent() ) {
+                        if (note.get().getLabel() == null) {
+                            note.get().setLabel(label.get());
+                        } else if (!note.get().getLabel().equals(label.get())) {
+                            note.get().setLabel(label.get());
+                        } else {
+                            warning.append("\n");
+                            warning.append("label was not updated because the provided labelID is identical to the current associated labelId.");
+                        }
+                    }else{
+                        warning.append("\n");
+                        warning.append("Lable was not updated because the provided labelId could not be found.");
                     }
 
-                    if (!note.get().getColor().equals(color.get())) {
-                        note.get().setColor(color.get());
-                    }
-
-                    if (!note.get().getTitle().equals(noteDTO.getTitle())) {
-                        note.get().setTitle(noteDTO.getTitle());
+                    if(color.isPresent()) {
+                        if(note.get().getColor() == null){
+                            note.get().setColor(color.get());
+                        }else if (!note.get().getColor().equals(color.get())) {
+                            note.get().setColor(color.get());
+                        }else{
+                            warning.append("\n");
+                            warning.append("NoteColor was not updated because the provided colorId is identical to the current associated colorId.");
+                        }
+                    }else{
+                        warning.append("\n");
+                        warning.append("NoteColor was not updated because the provided colorId could not be found.");
                     }
 
                     if (!note.get().getCosmetics().equals(noteDTO.getCosmetics())) {
                         note.get().setCosmetics(noteDTO.getCosmetics());
+                    }else{
+                        warning.append("\n");
+                        warning.append("Cosmetic was not updated because the provided cosmetic is identical to the current cosmetic.");
                     }
 
                     if (note.get().isPinned() != noteDTO.isPinned()) {
                         note.get().setPinned(noteDTO.isPinned());
+                    }else{
+                        warning.append("\n");
+                        warning.append("Pinned status was not updated because the provided pinned status is identical to the current pinned status.");
                     }
 
                     if (note.get().isHidden() != noteDTO.isHidden()) {
                         note.get().setHidden(noteDTO.isHidden());
+                    }else{
+                        warning.append("\n");
+                        warning.append("Hidden status was not updated because the provided hidden status is identical to the current hidden status.");
                     }
 
                     if (note.get().isDeleted() != noteDTO.isDeleted()) {
                         note.get().setDeleted(noteDTO.isDeleted());
+                    }else{
+                        warning.append("\n");
+                        warning.append("Deleted status was not updated because the provided deleted status is identical to the current deleted status.");
                     }
 
                     note.get().setUpdatedAt(LocalDateTime.now());
@@ -210,7 +247,9 @@ public class NoteService {
                     //save entity
                     noteRepo.save(note.get());
 
-                    return new ApiResponseDTO<String>(true, "note succesfully updated", null);
+                    System.out.println(warning.toString());
+
+                    return new ApiResponseDTO<String>(true, "note succesfully updated", warning.toString() , null);
 
                 } else {
                     throw new ResourceNotFoundException("A note by that id associated with the provided user could not be found");
