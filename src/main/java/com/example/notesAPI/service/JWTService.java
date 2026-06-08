@@ -8,7 +8,9 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,12 +22,13 @@ public class JWTService {
     private String secretKey;
 
     public JWTService() {
-        // The following code generates a secret key should I ever need to swap it
+////Use this to generate a new JWT secret for .env
+//// Not used at runtime
 //        try{
 //            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");//the key needs to be a certain size for this algo
 //            SecretKey sk = keyGenerator.generateKey();
 //            secretKey= Base64.getEncoder().encodeToString(sk.getEncoded()); //key is first generated and encoded in base64
-//            System.out.println(secretKey)
+//            System.out.println(secretKey);
 //        }catch (Exception e){
 //            System.out.println(e);
 //        }
@@ -47,11 +50,6 @@ public class JWTService {
 
     }
 
-    private SecretKey getKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey); //key is encoded in Base64, then decoded and used where needed
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
     public String extractEmail(String token) {
         // extract the username from jwt token
         Claims claims = extractAllClaims(token);
@@ -67,7 +65,6 @@ public class JWTService {
                 .getPayload();
         return claims;
     }
-
     public boolean validateToken(String token, MyUserDetails userDetails) {
         final String email = extractEmail(token);
 
@@ -84,5 +81,13 @@ public class JWTService {
     private Date extractExpiration(String token) {
         Claims claims = extractAllClaims(token);
         return claims.getExpiration();
+    }
+
+    ///////////////////////
+    /// PRIVATE METHODS ///
+    ///////////////////////
+    private SecretKey getKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey); //key is encoded in Base64, then decoded and used where needed
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
