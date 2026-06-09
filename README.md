@@ -56,7 +56,7 @@ This entity manages all label related information
 - Retrival of labels associated with the user
 - Deletion of labels
 
-## UI template
+## UI Template
 This entity manages all UI templates, whether they be default or user-made
 - Creation of UI Templates
 - Updating of UI Templates
@@ -105,9 +105,9 @@ A typical request flow is as follows:
 3) Client sends request to a protected endpoint using JWT token for authentication
 4) Token is authenticated by JWT filter
 5) Request goes to appropriate controller
-6) Payload is deserialize
+6) Payload is deserialize to required DTO
 7) Controller sends DTO to service layer
-8) Service layer calls repository layer and runs the bussiness logic
+8) Service layer calls repository layer and runs the business logic
 9) If a response is expected, DTO objeect is created and sent back to the client
 
 ## Key Design Decisions
