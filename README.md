@@ -169,6 +169,7 @@ SamplePassword@123
 I use Spring Data JPA to interact with the database, which includes Hibernate. The database is manually managed through the schema.sql file in resources. I did this so that i could deepen my understanding of ddl and db management.
 
 Here is a an overview of the database
+
 ![Clarity Physical ERD PNG](documents/Database Physical ERD.png)
 
 ## Main Entities & Important Fields
