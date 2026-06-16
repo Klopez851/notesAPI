@@ -165,7 +165,7 @@ I use Spring Data JPA to interact with the database, which includes Hibernate. T
 
 Here is a an overview of the database
 
-![Clarity Physical ERD PNG](/documents/Database Physical ERD.png)
+¡[[Clarity Physical ERD PNG](/documents/Database Physical ERD.png)\)
 
 ## Main Entities & Important Fields
 I tried to have as much of the data validation to be dont by the server to ensure data integrity. This also reduced the chances of faulty data bbeing stored due to poor data validation on the api, since any faulty information sent to the db would be denied.
@@ -276,7 +276,22 @@ All endpoints can be tested directly on the swagger website, however to access p
 
 although swagger allows for testing w/n the website, postman collections are still needed for more indepth testing. Swagger request bodies are determined by annotations in the code, so if one wanted to test sifferent information the code would need to be edited and the server restarted over and over, meanwhile with postman one needs to start the server once and then edit the request body as needed, allowing for faster and easiert testing
 
-the documentation is not fully vomplete, error responses still need to be documented.
+the documentation is not fully complete, error responses still need to be documented.
 
+## Getting Started
+The easiest and simplest way to test this api is through docker
 
+- Prerequisites
+  - An IDE
+  - Docker Desktop
 
+1) If you dont have Docker Desktop already, install it using Dockers official installetion guides:
+- Windows: https://docs.docker.com/desktop/setup/install/windows-install/
+- Mac: https://docs.docker.com/desktop/setup/install/mac-install/
+- Linux: https://docs.docker.com/desktop/setup/install/linux/
+
+2) Clone this repository
+3) run `docker compose up`
+
+wait patiently for the container to start, as long as port 8080 is open this should happen with no errors.
+to verify that it has started successfully navegate to the [Swagger ui](http://localhost:8080/swagger-ui/index.html#/)
