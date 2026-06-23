@@ -1,4 +1,18 @@
 !! README IS A WIP !!
+# Table of Contents
+
+- [Clarity API](#clarity-api)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Key Design Decisions](#key-design-decisions)
+- [Authentication & Security](#authentication--security)
+- [Database Design](#database-design)
+- [API Documentation](#api-documentation)
+- [Getting Started](#getting-started)
+- [Stopping the Application](#stopping-the-application)
+- [Challenges and Lessons Learned](#challenges-and-lessons-learned)
+----
 
 # CLARITY API
 
