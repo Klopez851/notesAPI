@@ -2,320 +2,507 @@
 
 # CLARITY API
 
-This is a RESTful API for my personal note-taking web application. This project will allow users to create and customize notes to their liking, meeting both the aesthetic and functional needs a user might have. 
+This is a RESTful API for my personal note-taking web application. The goal of this project is to allow users to create and customize notes to their liking, meeting both the aesthetic and functional needs they may have.
 
-I am building this project to address the concerns with data privacy I face when using Google Keep, as well as my dissatisfaction with their ui customization options. Im also building this project to gain hands-on experience with the Spring ecosystem and deepen my understanding of this framework, its available libraries, and standard backend development practices.
+I am building this project to address the data privacy concerns I have when using Google Keep, as well as my dissatisfaction with its UI customization options. I'm also building this project to gain hands-on experience with the Spring ecosystem and deepen my understanding of the framework, its libraries, and standard backend development practices.
 
-This project demonstrates my current understanding of
-- RESTful API design
-- DTO pattern
-- Layered Architecture
-- Stateless Authentication through JWT tokens
-- Separation of Concerns
-- Spring's Dependency Injection
-- Externalized configuration management
-- Database design
-- Containerization
+This project demonstrates my current understanding of:
+
+* RESTful API design
+* DTO pattern
+* Layered architecture
+* Stateless authentication with JWTs
+* Separation of concerns
+* Spring dependency injection
+* Externalized configuration management
+* Database design
+* Containerization
 
 
 # FEATURES
-This API has basic CRUD operations for all the key entities, except for the User entity, which has a login endpoint that returns a valid JWT token to gain access to protected endpoints.
+
+This API supports basic CRUD operations for all key entities, with the exception of the User entity. Instead, users authenticate through a login endpoint that returns a valid JWT, which can then be used to access protected endpoints.
 
 ## Authentication
-- User authentication using JWT tokens
-- Secure access to protected endpoints
-  
+
+* User authentication using JWTs
+* Secure access to protected endpoints
+
 ## User
-- User registration
-- User authentication
-- Retrieval of basic user info (for frontend use)
-- Updating of user information (i.e. email, username, password)
-- Deletion of user account
+
+* User registration
+* User authentication
+* Retrieval of basic user information (for frontend use)
+* Updating user information (e.g. email, username, password)
+* Deletion of user accounts
 
 ## Notes
-- Creation of notes
-- Updating of the note as a whole
-- Updating of individual note aspects (i.e. title, content, label, pinned status..etc)
-- Retrieval of all notes or individual notes associated with the user
-- Customization of an individual note's colors
-- Deletion of notes
+
+* Creation of notes
+* Updating a note as a whole
+* Updating individual note attributes (e.g. title, content, label, pinned status, etc.)
+* Retrieval of all notes or individual notes associated with the authenticated user
+* Customization of note colors
+* Deletion of notes
 
 ## Note Color
-- Creation of a color
-- Updating of a color associated with the user
-- Retrival of all colors associated with the user
-- Deletion of a color
+
+* Creation of custom colors
+* Updating colors associated with the user
+* Retrieval of all colors associated with the user
+* Deletion of colors
 
 ## Label
-- Creation of custom labels
-- Updating of labels
-- Retrieval of labels associated with the user
-- Deletion of labels
+
+* Creation of custom labels
+* Updating labels
+* Retrieval of labels associated with the user
+* Deletion of labels
 
 ## UI Template
-- Creation of UI Templates
-- Updating of UI Templates
-- Retrieval of UI Templates
-- Deletion of UI Templates
 
-As far as api documentation goes, I used Swagger UI for interactive documentation as well as OpenAPI specification generation. To access the documentation go to http://localhost:8080/swagger-ui/index.html#/ after starting the project
+* Creation of UI templates
+* Updating UI templates
+* Retrieval of UI templates
+* Deletion of UI templates
+
+## API Documentation
+
+For API documentation, I used Swagger UI for interactive endpoint exploration and OpenAPI specification generation.
+
+After starting the application, the documentation can be accessed at:
+
+`http://localhost:8080/swagger-ui/index.html#/`
 
 # TECH STACK
+
 ## Backend
-- Java
-- Spring Boot
-- Spring Security
-- JSON Web Tokens (JWT)
-- Lombok
+
+* Java
+* Spring Boot
+* Spring Security
+* JSON Web Tokens (JWT)
+* Lombok
+
 ## Data
-- MySQL
-- Spring Data JPA
+
+* MySQL
+* Spring Data JPA (Hibernate)
+
 ## Testing
-- JUnit 5
-- Rest Assured
+
+* JUnit 5
+* Rest Assured (unit testing)
+
 ## DevOps
-- Docker
-- Docker Compose
-- Environmental Variables
+
+* Docker
+* Docker Compose
+* Environment Variables
+
 ## Documentation
-- Swagger IU
-- SpringDoc OpenAPI
+
+* Swagger UI
+* SpringDoc OpenAPI
 
 # Architecture
-The application follows a layered architecture with stateless authentication through JWT, with separation of responsibilities across different sections (separation of concerns).
 
+The application follows a layered architecture with stateless authentication using JWTs. Responsibilities are separated across different layers to maintain separation of concerns and keep the application modular and easier to maintain.
+
+```text
 DTO
-⇄
+ ⇄
 Controller Layer
-⇄
+ ⇄
 Service Layer
-⇄
+ ⇄
 Repository Layer
-⇄
+ ⇄
 MySQL Database
+```
 
 A typical request flow is as follows:
-1) User logs in
-2) JWT token is returned
-3) Client sends request to a protected endpoint using JWT token for authentication
-4) Token is authenticated by JWT filter
-5) Request goes to appropriate controller
-6) Payload is deserialize to required DTO
-7) Controller sends DTO to service layer
-8) Service layer calls repository layer and runs the business logic
-9) If a response is expected, DTO object is created and sent back to the client
+
+1. User logs in
+2. JWT is returned upon successful authentication
+3. Client sends a request to a protected endpoint using the JWT for authentication
+4. The JWT filter validates the token
+5. The request is routed to the appropriate controller
+6. The request payload is deserialized into the required DTO
+7. The controller passes the DTO to the service layer
+8. The service layer executes the business logic and interacts with the repository layer
+9. The repository layer performs the necessary database operations
+10. The result is returned to the service layer
+11. The service layer returns the response to the controller
+12. The controller returns an HTTP response to the client
 
 ## Key Design Decisions
 
 ### DTO Pattern
-I use DTO's in order to protect sensitive user information as well as to not overwhelm the front-end with unecessary information everytime a requested is made. Not all information needs to be sent in every request, and DTOs let me control what information is transfered to and from the backend.
 
-### Input Validation done internally by each DTO
-I decided to not rely on the built-in validation annotations that come with lombok 1) because i wanted full control of how each object gets validated to deppen my understanding of input validation, but 2) becuase this is a small program where i dont expect the basic structure to change much over time, i opted to put in the extra validation work in order to not have surprise bugs pop up in the case that a library update takes place, the only reason why the validation wil get updated/changed is becuase of feature updates or fixing of already known bugs, reducing the amount of maintanance needed in the long run.
+I use DTOs to protect sensitive user information and to avoid overwhelming the frontend with unnecessary data every time a request is made. Not all information needs to be sent with every request, and DTOs give me fine-grained control over what data is transferred to and from the backend.
+
+### Input Validation Within DTOs
+
+I decided not to rely on the built-in validation annotations provided by Spring because I wanted full control over how each object gets validated and to deepen my understanding of input validation.
+
+Since this is a relatively small application and I don't expect the basic structure of these objects to change frequently, I felt the extra effort was worthwhile. By handling validation myself, I reduce the chances of unexpected behavior caused by framework or library updates. Validation rules will only change when features change or known bugs are fixed, making long-term maintenance more predictable.
 
 ### Layered Architecture
-I decided to Layer my application  becuase it makes maintenance much easier as well as improving code readability/debugability. When an update needs to be made, only a portion (mainly the service layer where the business logic lives) of the application needs to be updated, making the system much more resilient and less likely to completely break during a feature update.
+
+I chose a layered architecture because it makes maintenance easier while also improving readability and debuggability.
+
+When changes need to be made, they are often isolated to a specific layer, usually the service layer where the business logic lives. This reduces the impact of feature updates and makes the application more resilient to change.
 
 ### Authentication
-JWT is a cheap but effective way of authenticating users. due to its statelessness it helps prevent unecessary db querying as well as simplifying the database schema itself since there is no need to have an authentication entitity, unlike session-bases authentication. The fact that JWT holds most of the needed user information also simplifies requests, since the service layer can pull the needed user information from the jwt token itself, allowing for more request integrity. 
 
-To mitigate the risks that come with using these tokens, i plan on implementing refresh tokens, lowering the validity window of the token, and maybe implementing a token blacklist if i feel like the extra security is needed (if the app ever gets used by someone other than me). The current validity windown of the token is 30 mins, to ease testing with postman, but it will be reduced significantly when the refresh token system is up and running.
+JWTs are a simple but effective way to authenticate users. Because they are stateless, they reduce unnecessary database queries and simplify the overall system design by eliminating the need for server-side session storage.
 
-### Environmental variables
-environmental variables offer a way for programers to hide sensitive data in their code, making it a good design choice in my system that has sensitive information that is required for the code to run (such as db passwords, jwt secret, etc...). ofc this doesnt come with its downside of these variables needing to be configured in each individual machine, but the security benefits was aoutweigh this con
+Another advantage is that the token already contains much of the information needed to identify the user. This allows the service layer to extract user information directly from the token rather than requiring additional request data, helping maintain request integrity and keeping endpoints cleaner.
+
+To mitigate some of the risks associated with JWTs, I plan to implement refresh tokens and reduce the access token validity window. I may also implement token blacklisting if the application ever grows beyond personal use and requires additional security measures.
+
+The current token validity period is 30 minutes to make testing with Postman easier, but it will be reduced once a refresh token system is implemented.
+
+### Environment Variables
+
+Environment variables provide a way to keep sensitive information out of the codebase, making them a natural choice for storing values such as database credentials and JWT secrets.
+
+This approach does come with the tradeoff of requiring additional configuration on each machine where the application is deployed, but I believe the security benefits outweigh that inconvenience.
 
 ### Global Exception Handler
-This is all about maintanability, If a chnage needs to be made to an exception, say chnage the error code from Conflict to Not Found, i only need to change it in one place rather than scowering the whole program for all places where that exceltion takes place, reducing the chances of faulty error responses as well
+
+The primary reason for implementing a global exception handler is maintainability.
+
+If an exception response needs to change—for example, changing an HTTP status code from Conflict to Not Found—I only need to update that logic in one place rather than searching through the entire codebase. This reduces duplicated error-handling logic and lowers the chance of inconsistent or incorrect error responses.
+
 
 # Authentication & Security
+
 ### Authentication Flow
-1) User created an account through the open registration endpoint (/user/createUser)
-2) User provides their email and password in through login endpoint (/user/login)
-- this endpoint takes care of validating the user information, generating a valid jwt token (using the jsonwebtoken(JJWT) library) after successful authentication, and sending it back to the frontend in the response payload
-3) Client makes a request to a protected endpoint with token as part of the Authorization request header
-4) JWT filter verifies the validity of the token and its claims, authenticating the user if everything is valid, if not a Unauthorized error is sent back
-5) Request moves through to the next step in the request flow
+
+1. User creates an account through the public registration endpoint (`/user/createUser`)
+2. User provides their email and password through the login endpoint (`/user/login`)
+
+   * This endpoint validates the user's credentials, generates a JWT using the JJWT library upon successful authentication, and returns it to the frontend in the response payload.
+3. The client sends a request to a protected endpoint with the token included in the `Authorization` header.
+4. The JWT filter verifies the validity of the token and its claims. If the token is valid, the user is authenticated; otherwise, an `Unauthorized` response is returned.
+5. The request continues through the normal request flow.
 
 ### Password Security
-Passwords are hashed before storing using Bcrypt(10 strength). It is also important to note that passwords are salted automatically by bcrypt, so anytime a user logs in, the incoming password is also hashed using the same strength and salt, and the resulting hash are compared to the existing one. The system does not store actual user passwords, not only is it bad practice and not secure, but also goes agaisnt the whole reason why I started this project, data privacy.
+
+Passwords are hashed before being stored using BCrypt with a strength factor of 10.
+
+It is also important to note that BCrypt automatically handles salting. When a user logs in, the incoming password is checked against the stored hash using BCrypt's verification process. The application never stores actual user passwords.
+
+Not only is storing plaintext passwords a major security risk, but it also goes against one of the primary reasons I started this project in the first place: data privacy.
 
 ### Protected Routes
-All but the login, registration, and swagger ui endpoints are protected by spring security. 
+
+All endpoints, with the exception of login, registration, and Swagger UI documentation endpoints, are protected through Spring Security.
 
 ### Environment & Secrets
-The JWT secret is stored as an environmental variable, this allows me to still use sensitive data in the code while not exposing.
 
-the current env.example provides all the crutial variables needed for the application to work; these being
-- the Database username and password
-- A sample JWT secret, this secret is for local testing and development only. A secure secret should always be generated for production environment.
+The JWT secret is stored as an environment variable. This allows the application to use sensitive data without exposing it in the codebase.
 
+The provided `.env.example` file contains the critical variables required for local development:
+
+* Database username
+* Database password
+* Sample JWT secret
+
+The sample JWT secret is intended for local testing and development only. A secure, randomly generated secret should always be used in production environments.
 
 # Database Design
-I used a local MySql database for all testing and conteinarized one as well, dummy data has been provided for the following users:
 
-alice,
-alice@example.com,
-UserPassword@123
+I used a local MySQL database for development and testing, and I also containerized a database instance using Docker. Dummy data has been provided for the following users:
 
-Bob,
-bob@example.com,
-SamplePassword@123
+**(Demo User) Alice**
 
-I use Spring Data JPA to interact with the database, which includes Hibernate. The database is manually managed through the schema.sql file in resources. I did this so that i could deepen my understanding of ddl and db management.
+* [alice@example.com](mailto:alice@example.com)
+* UserPassword@123
 
-Here is a an overview of the database
+**(Demo User) Bob**
 
-¡[[Clarity Physical ERD PNG](/documents/Database Physical ERD.png)\)
+* [bob@example.com](mailto:bob@example.com)
+* SamplePassword@123
 
+I use Spring Data JPA (Hibernate) to interact with the database. The schema itself is manually managed through the `schema.sql` file located in the resources directory. I chose this approach because I wanted to deepen my understanding of DDL and database management rather than relying entirely on ORM-generated schemas.
+
+Here is an overview of the database:
+
+¡[Clarity Physical ERD PNG](/documents/Database Physical ERD.png)\)
 ## Main Entities & Important Fields
-I tried to have as much of the data validation to be dont by the server to ensure data integrity. This also reduced the chances of faulty data bbeing stored due to poor data validation on the api, since any faulty information sent to the db would be denied.
+
+I tried to push as much validation as possible down to the database level to help ensure data integrity. This reduces the chances of invalid data being stored due to bugs or insufficient validation elsewhere in the application.
 
 ### User
-This entity manages all user account information
-- Email
-  - although all emails are unique by default, i decided to make the field unique to prevent duplicate users from being added, since emails are unique, there is no reason why two users should have the same email.
-  - As for the size of the field, I did some research to figure out the standard field sizze for an email and landed on that number
-- Password
-  - Since im using Bcrypt to hash my passwords, I made the field as big as the usual Bcrypt output to not use up unnecesary storage space, as well as being able to catch errors, since if a password added is longer tha 60 chars, ill know something is up with my hashing process.
 
-Since this is a core entity, it has many relationships:
-- Many:Optional 1 to UI Template
-  - A user can own/create many templates, but a template can belong to 1 or no users (allows room for system provided templates)
-- Many:1 to Note Color
-  - A user can own/create many colors, but a color can belong to only one user
-- Many:1 to Label
-  - A user can own/create many labes, but a label can only belong to one user
-- Many:1 to Note
-  - A user can own/create many notes, but a note can only belong to one user
+This entity manages all user account information.
 
+#### Email
+
+* Although email addresses are unique by nature, I explicitly enforced uniqueness at the database level to prevent duplicate accounts from being created.
+* I also researched common email length limits before choosing the field size.
+
+#### Password
+
+* Since passwords are hashed using BCrypt, I sized the field according to the expected BCrypt output length.
+* This avoids unnecessary storage usage while also making it easier to detect issues if an unexpectedly large value is ever stored.
+
+Since this is a core entity, it has several relationships:
+
+* Many-to-One (Optional) with UI Template
+
+  * A user can own many templates, while a template can belong to one user or none at all. This allows room for system-provided templates.
+* One-to-Many with Note Color
+
+  * A user can create many colors, while each color belongs to a single user.
+* One-to-Many with Label
+
+  * A user can create many labels, while each label belongs to a single user.
+* One-to-Many with Note
+
+  * A user can create many notes, while each note belongs to a single user.
 
 ### Notes
-This entity manages all note related information with the help of supporting entities
-- Title
-  - just like with the email field, I did some research to figure out the standard field sizze for a note title and landed on that number
-- Text Content & Cosmetics
-  - Since im still in the process of figuring out what the content of these fields will look like (will figure it out after frontend is done) i opted to make then text fields, sice this is the most likely data type that ill need, however these field types are subject to change in the future
-- Deleted & Time Left Before Before Deletion
-  - I have these two fields to be able to have a 30 day soft delete before fully deleting a note, allowing it to be restored at any point before the 30 days are over. I plan on adding a trigger to the db to update the Time Left Before Before Deletion based on changes to the Deleted field.
 
-Since this is also a core entity, it also has many relationships:
-- 1:Many to User
-  - A Note can belong to only 1 user, but a User can own many notes
-- Optional 1:Many to Label
-  - A Note can use 1 or no label, but a label can be used by many notes
-- Optional 1:Many to Note Color
-  -A Note can use 1 or no color, but a color can be used by many notes
+This entity manages all note-related information with the help of supporting entities.
+
+#### Title
+
+* Similar to the email field, I researched common note title lengths before choosing a size limit.
+
+#### Text Content & Cosmetics
+
+* Since the frontend is still being developed, I do not yet know the final structure of this data.
+* For now, I chose text-based fields because they provide the flexibility I expect to need. These field types may change as the project evolves.
+
+#### Deleted & Time Left Before Deletion
+
+* These fields support a 30-day soft delete system.
+* A deleted note can be restored at any point during that period before being permanently removed.
+* I plan to add a database trigger that automatically updates the remaining deletion time whenever the deleted status changes.
+
+Relationships:
+
+* Many-to-One with User
+
+  * A note belongs to one user, while a user can own many notes.
+* Many-to-One (Optional) with Label
+
+  * A note can use one label or none, while a label can be associated with many notes.
+* Many-to-One (Optional) with Note Color
+
+  * A note can use one color or none, while a color can be associated with many notes.
 
 ### Note Color
-This is a supporting entity for Notes, it stores all of the users saved colors
-- Color Hex
-  - 9 chars allow support for color hex with alpha transparency
+
+This supporting entity stores user-created note colors.
+
+#### Color Hex
+
+* The field supports 9 characters, allowing storage of RGBA hex values with alpha transparency.
 
 Relationships:
-- 1:Many to User
-  - A color can belong to 1 user, but a user can own/create many colors
-- Many:Optional 1 to Note
-  - A color can be used by many notes, but Note can use 1 or no color
+
+* Many-to-One with User
+
+  * A color belongs to one user, while a user can create many colors.
+* One-to-Many with Note
+
+  * A color can be used by many notes, while a note can use one color or none.
 
 ### Label
-This entity manages all label related information
 
-no notable fields/field types
+This entity manages note labels.
+
+No particularly notable field constraints exist beyond standard validation.
 
 Relationships:
-- 1:Many to User
-  -A Label can belong to one user, but a user can own many labels
-- Many:Optional 1 to Note
-  - a label can be used by many notes, but a note can use one or no label
+
+* Many-to-One with User
+
+  * A label belongs to one user, while a user can own many labels.
+* One-to-Many with Note
+
+  * A label can be used by many notes, while a note can use one label or none.
 
 ### UI Template
-This entity manages all UI templates, whether they be default or user-made
-- Template Name
-  - just like Text Content & Cosmetics, im the the middle of figuring out that the content of this field will look like in reality, so i choose the most optimal field.
- 
+
+This entity manages both system-provided and user-created UI templates.
+
+#### Template Name
+
+* Similar to the content and cosmetics fields, I am still determining what the final structure of template data will look like.
+* For now, I chose the field type that provides the flexibility I expect to need.
+
 Relationships:
-- Optional 1:Many
-  - a template can belong to 1 or no users, but a user can have many templates
+
+* Many-to-One (Optional) with User
+
+  * A template can belong to one user or none at all, while a user can own many templates.
 
 ## Important Constraints
-`ALTER TABLE note ADD CONSTRAINT chk_values_are_different CHECK (NOT (pinned = TRUE AND hidden = TRUE ));`
 
-I created this constraint to ensure that a note isnt saved as pinned and hidden, since its impossible for both fields to be true. saves the front-end a lot of trouble
- 
-`ALTER TABLE notecolor ADD CONSTRAINT unique_user_noteColor UNIQUE (user_id, color_hex);`
+```sql
+ALTER TABLE note
+ADD CONSTRAINT chk_values_are_different
+CHECK (NOT (pinned = TRUE AND hidden = TRUE));
+```
 
-This constraint ensures that a user doesnt save the same color twice, saves space in the long run as well as reduces the database maintanance load
+I created this constraint to ensure a note cannot be both pinned and hidden at the same time, since those states conflict with one another. Enforcing this rule at the database level helps prevent invalid application states.
 
-`ALTER TABLE uitemplate ADD CONSTRAINT unique_user_template UNIQUE (user_id, template_name);`
+```sql
+ALTER TABLE notecolor
+ADD CONSTRAINT unique_user_noteColor
+UNIQUE (user_id, color_hex);
+```
 
-this constraint ensure that a user doesnt save duplicate templates.
+This constraint ensures users cannot save the same color multiple times, reducing redundant data and lowering long-term maintenance requirements.
 
-### Indexes
-I added indexes to frequently browsed fields, such as:
-- User
-  - Email
-- Note
-  - User ID (Foreign key)
-  - Label ID (Foreign key)
-- Label
-  - User ID (Foreign key)
-- Note Color
-  - User ID (Foreign key)
-- IU Template
-  - User ID (Foreign key)
-Primary keys  are also indexed since MySql indexes PKs automatically.
+```sql
+ALTER TABLE uitemplate
+ADD CONSTRAINT unique_user_template
+UNIQUE (user_id, template_name);
+```
+
+This constraint ensures users cannot save duplicate templates.
+
+## Indexes
+
+I added indexes to fields that are expected to be queried frequently:
+
+### User
+
+* Email
+
+### Note
+
+* User ID (Foreign Key)
+* Label ID (Foreign Key)
+
+### Label
+
+* User ID (Foreign Key)
+
+### Note Color
+
+* User ID (Foreign Key)
+
+### UI Template
+
+* User ID (Foreign Key)
+
+Primary keys are also indexed automatically by MySQL.
+
 
 ## API Documentation
-For Api documentation i decided to use SpringDoc OpenAPI + Swagger Ui for clean and consistent documentation. I chose to use these two because a) it reduces thes ammount of time spent writing documentation since its automated, making it more maintainable B) allows developes to quickly test the api and C) alllows developers to quickly understand the endpoints and request bodies needed, reducing the amount og time reading documentation vs actual development.
 
-As mentioned earlier, to access the api documentation is publicly acessible after starting the docker container and then going to http://localhost:8080/swagger-ui/index.html#/
+For API documentation, I decided to use SpringDoc OpenAPI and Swagger UI to provide clean and consistent documentation.
 
-because of SpringDoc OpenAPI, all endpoints are documented automatically, with additional information being added via annotations in the code. All DTOs are also available in the shcemas section at the bottom of the page
+I chose these tools because:
 
-All endpoints can be tested directly on the swagger website, however to access protected endpoints the tester would have to get a token and add it to the requests via the authorize button, allowing for auth w/n swagger
+* They significantly reduce the amount of time spent writing and maintaining documentation since most of it is generated automatically.
+* They allow developers to quickly test endpoints without needing additional tools.
+* They make it easy to understand available endpoints, request bodies, and response structures, reducing the amount of time spent reading documentation and increasing the time spent actually building against the API.
 
-although swagger allows for testing w/n the website, postman collections are still needed for more indepth testing. Swagger request bodies are determined by annotations in the code, so if one wanted to test sifferent information the code would need to be edited and the server restarted over and over, meanwhile with postman one needs to start the server once and then edit the request body as needed, allowing for faster and easiert testing
+As mentioned earlier, the API documentation is publicly accessible after starting the application:
 
-the documentation is not fully complete, error responses still need to be documented.
+`http://localhost:8080/swagger-ui/index.html#/`
+
+Thanks to SpringDoc OpenAPI, all endpoints are documented automatically, with additional details provided through annotations in the code. All DTO schemas are also available in the **Schemas** section at the bottom of the page.
+
+All endpoints can be tested directly through the Swagger UI. To access protected endpoints, a user must first obtain a JWT through the login endpoint and then provide it using the **Authorize** button. This allows authenticated requests to be made directly from within Swagger.
+
+Although Swagger provides convenient endpoint testing, I still consider Postman collections necessary for more in-depth testing.
+
+Swagger request examples are largely driven by annotations in the code, meaning that testing certain edge cases may require code changes and application restarts. With Postman, the server only needs to be started once, and request payloads can be modified freely, making it much faster to test different scenarios and invalid inputs.
+
+The documentation is still a work in progress. Error responses and error schemas have not yet been fully documented.
 
 ## Getting Started
-The easiest and simplest way to test this api is through docker
 
-- Prerequisites
-  - An IDE
-  - Docker Desktop
+The easiest way to run and test this API is through Docker.
 
-1) If you dont have Docker Desktop already, install it using Dockers official installetion guides:
-- Windows: https://docs.docker.com/desktop/setup/install/windows-install/
-- Mac: https://docs.docker.com/desktop/setup/install/mac-install/
-- Linux: https://docs.docker.com/desktop/setup/install/linux/
+### Prerequisites
 
-2) Clone this repository
-3) edit password env variables.
-4) remove .example extention from .env.example
-5) run `docker compose up`
+- Docker Desktop
+- Git
+- IDE (optional, for exploring the codebase)
 
-wait patiently for the container to start, as long as port 8080 is open this should happen with no errors.
-to verify that it has started successfully navegate to the [Swagger ui](http://localhost:8080/swagger-ui/index.html#/)
+### Installation
 
+1. If you do not already have Docker Desktop installed, follow Docker's official installation guide for your operating system:
 
-## Challenges and lessons learned
+   * Windows: `https://docs.docker.com/desktop/setup/install/windows-install/`
+   * macOS: `https://docs.docker.com/desktop/setup/install/mac-install/`
+   * Linux: `https://docs.docker.com/desktop/setup/install/linux/`
+
+2. Clone this repository.
+
+3. Open `.env.example` and update any environment variables you wish to customize, such as database credentials.
+
+4. Rename `.env.example` to `.env`.
+
+5. Start the application:
+
+```bash
+docker compose up
+```
+
+The initial startup may take a minute while Docker builds the images and initializes the database.
+
+As long as port `8080` is available, the application should start without issues.
+
+To verify that everything started successfully, navigate to:
+
+```text
+http://localhost:8080/swagger-ui/index.html#/
+```
+
+If the Swagger UI loads correctly, the API and database are running successfully.
+
+### Stopping the Application
+
+To stop the application run:
+
+```bash
+docker compose down
+```
+
+## Challenges and Lessons Learned
+
 ### JWT
-By far my biggest hurdle to overcome during the beginning stages of this project. Implementing JWT was specially difficult becuase i didnt have an indepth understanding of how spring worked in the backgorund. it took a lot of research, reading of official documents, and reading/watching tutorials on this implementation to truly understand the flow of authentification and how spring components work together to accept and process request/responses.
 
-The most challenging part of implementing JWT was learning about the necessary classes and their methods, although i had gained detailed theoretical underding of the aauthentication flow, actually implementing this concept was difficult
+By far, my biggest hurdle at the beginning of this project was implementing JWT.
 
-However this long learning process was extremely fulfilling, specially seeing the requests be properly process after i was dont implementing them. this hurdle solidified my resolve to finish this project regardless of how dificult it was at the moment, as well as increasing my pride and confident as a developer.
+It was especially difficult because I did not yet have a deep understanding of how Spring works under the hood. It took a lot of research, reading official documentation, and going through tutorials to fully understand the authentication flow and how Spring components work together to process requests and responses.
 
-### Docker & Docker compose
-as this was my first time conteinerizing an application i ran into a lot of problems. first i needed to understand docker and how it workes, i read the official documentation and read online articles on docker, i learned about the layer to a container, how env variables are passed into a container, as well as how to tinker with spring spplication properties to do what i needed.
+The most challenging part was learning the necessary classes and their methods. Although I had a solid theoretical understanding of the authentication flow, translating that into a working implementation was not straightforward.
 
-After i studied up on docker and docker compose actually implementing these was also a hurdle. my main issue was that my db image in the container started wasy to late, maning that my api was strying to stablish a connection to database that wasnt up a running. after implementing health checks as well as a 'depends on' requirement, everything worked as intended.
+However, the process was extremely fulfilling, especially seeing requests being properly processed after everything was implemented. This challenge solidified my resolve to finish the project regardless of difficulty and increased my confidence as a developer.
 
-this process taught me so much about Docker as a platform and helped me truly appreciate how impressive and useful of a tool it is.
+### Docker & Docker Compose
+
+As this was my first time containerizing an application, I ran into several issues.
+
+First, I had to understand Docker itself; how it works, what happens inside a container, how environment variables are passed, and how Spring application properties interact with containerized environments. I studied the official documentation and various online resources to gain this understanding.
+
+Even after that, implementation was still challenging. My main issue was that the database container was starting too late, meaning my API was attempting to connect to a database that was not yet running. After implementing health checks and a `depends_on` configuration, everything worked as expected.
+
+This process taught me a lot about Docker as a platform and helped me appreciate how how impressive and useful of a tool it is in real-world development.
 
 ### Models, JPA, and Hibernate
-Understanding how models and tables ina a database relate took a bit at the begining. at first i was failing to understand that i was supposed to model the intities exactly as they were on the database, specially since i didnt want to let Hibernate automatically create the tables based on my models. I simply didnt feel confident enough in my models to let that happen. But after a lot of research into how to model entitiy relationships in spring i was able to succesfully model my database, and only let hibernate validate my model against the db. everytime my project ran flawlessly (well in relation to entitites) i felt such a huge feeling of satisfaction and once again i felt my confidence as a developer increase.
+
+Understanding how models and database tables relate to each other took some time at the beginning.
+
+Initially, I struggled with the idea that I was supposed to model entities closely to the database schema, especially since I did not want Hibernate to automatically generate tables from my models. I did not feel confident enough in my model design at the time to rely on that behavior.
+
+After researching entity relationships in Spring and JPA, I was able to successfully model the database and use Hibernate primarily for validation against the schema rather than generation. Once everything started running correctly and consistently, I felt a huge feeling of satisfaction and once again I felt my confidence as a developer increase.
 
 ### Debugging
-debugging a system while trying to understand it at the same time was extremely challenging, but being able to see how the information moves line by line, seeing how all the processses work together to take, alter, and return information was extremely helpful and solifidyed all the theoretical knowledged i had gained.
+
+Debugging a system while also trying to understand it was one of the most challenging parts of this project.
+
+Being able to see how data moves line by line through the system; how it is received, transformed, and returned across layers, was extremely valuable. It helped me understand how all the components work together in practice rather than just in theory.
