@@ -527,7 +527,7 @@ Understanding how models and database tables relate to each other took some time
 
 Initially, I struggled with the idea that I was supposed to model entities closely to the database schema, especially since I did not want Hibernate to automatically generate tables from my models. I did not feel confident enough in my model design at the time to rely on that behavior.
 
-After researching entity relationships in Spring and JPA, I was able to successfully model the database and use Hibernate primarily for validation against the schema rather than generation. Once everything started running correctly and consistently, I felt a huge feeling of satisfaction and once again I felt my confidence as a developer increase.
+After researching entity relationships implementations, I was able to successfully model the database and use Hibernate primarily for validation against the schema rather than generation. Once everything started running correctly and consistently, I felt a huge feeling of satisfaction and once again I felt my confidence as a developer increase.
 
 ### Debugging
 
