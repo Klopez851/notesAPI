@@ -416,11 +416,11 @@ Testing is currently in the very early stages of development and I’m treating 
 
 Most of the API so far was built and tested manually using Postman. This helped me check that endpoints work as expected, that data is being stored correctly, and that the general request flow is behaving the way I intended while I was still building features.
 
-Now that most of the core functionality is in place, I’m focusing on automated testing. Instead of testing things manually as I go, I want to go back through the codebase and add proper test coverage.
+Now that most of the core functionality is in place, I’m focusing on automated testing instead of manually testing things as I go. This should help a lot with maintaining the intended behavior of the endpoints if I need to change the code later on.
 
 For now, I plan to focus on:
 
-- Unit tests with JUnit 5 mainely for service-layer logic and business rules
+- Unit tests with JUnit 5 mainly for service-layer logic and business rules
 - API tests with Rest Assured to test endpoints through real HTTP requests
 
 At the moment, I’m not focusing much on integration testing. Most of the service logic is fairly isolated, and the main interactions happen between services and repository layers. Because of that, I’m prioritizing unit tests and API tests first before moving onto anything more complex.
