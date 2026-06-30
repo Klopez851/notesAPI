@@ -149,7 +149,7 @@ A typical request flow is as follows:
 11. The service layer returns the response to the controller
 12. The controller returns an HTTP response to the client
 
-## Key Design Decisions
+# Key Design Decisions
 
 ### DTO Pattern
 
@@ -426,7 +426,7 @@ For now, I plan to focus on:
 At the moment, I’m not focusing much on integration testing. Most of the service logic is fairly isolated, and the main interactions happen between services and repository layers. Because of that, I’m prioritizing unit tests and API tests first before moving onto anything more complex.
 
 
-## API Documentation
+# API Documentation
 
 For API documentation, I decided to use SpringDoc OpenAPI and Swagger UI to provide clean and consistent documentation.
 
