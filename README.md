@@ -8,6 +8,7 @@
 - [Authentication & Security](#authentication--security)
 - [Database Design](#database-design)
 - [API Documentation](#api-documentation)
+- [Recommended Testing Order](recommended-testing-order)
 - [Testing](#testing-approach)
 - [Getting Started](#getting-started)
 - [Stopping the Application](#stopping-the-application)
@@ -449,7 +450,29 @@ Swagger request examples are largely driven by annotations in the code, meaning 
 
 The documentation is still a work in progress. Error responses and error schemas have not yet been fully documented.
 
-## Getting Started
+# Recommended Testing Order
+
+Some endpoint sample requests depend on resources created by earlier steps. For the smoothest testing experience, I recommend testing the endpoints in the following order:
+
+1. Create a user (`/user/createUser`)
+2. Log in (`/user/login`)
+
+   * Feel free to explore the rest of the User endpoints. Just keep in mind that any changes you make to the sample user (such as updating the email or password) will affect subsequent requests.
+3. Copy the generated JWT and authorize your requests using the **Authorize** button in Swagger.
+4. Create a label (`/label/createLabel`)
+
+   * Feel free to explore the rest of the Label endpoints. I recommend saving the delete endpoint until after Step 7. If you delete the label earlier, simply create another one and update the label ID in any subsequent sample requests.
+5. Create a note color (`/noteColor/createColor`)
+
+   * Feel free to explore the rest of the Note Color endpoints. As with labels, I recommend leaving the delete endpoint until after Step 7. If you delete the color earlier, recreate it and update the note color ID in any subsequent sample requests.
+6. Create a note (`/note/createNote`)
+7. Update the note (`/note/updateNote`)
+
+Since the UI Template feature is not part of the typical user workflow, I did not include it in the recommended testing order. After completing the steps above, feel free to explore the remaining endpoints. The various `GET` endpoints are useful for confirming that your changes were applied as expected.
+
+If you'd like to explore the data that already belongs to one of the demo users, simply log in using their credentials, authorize using the generated JWT, and use the `GET` endpoints in each entity group to view their associated data.
+
+# Getting Started
 
 The easiest way to run and test this API is through Docker.
 
