@@ -8,7 +8,7 @@
 - [Authentication & Security](#authentication--security)
 - [Database Design](#database-design)
 - [API Documentation](#api-documentation)
-- [Recommended Testing Order](recommended-testing-order)
+- [Recommended Testing Order](#recommended-testing-order)
 - [Testing](#testing-approach)
 - [Getting Started](#getting-started)
 - [Stopping the Application](#stopping-the-application)
